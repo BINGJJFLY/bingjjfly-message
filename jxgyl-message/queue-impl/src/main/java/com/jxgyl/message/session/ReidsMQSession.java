@@ -8,6 +8,12 @@ import com.jxgyl.message.Message;
 import com.jxgyl.message.listener.RedisMessageListener;
 import com.jxgyl.message.queue.consumer.MessageRedisConsumer;
 
+/**
+ * RedisMQ消息会话
+ *
+ * @author iss002
+ *
+ */
 public class ReidsMQSession implements Session {
 
 	private RedisMessageListener listener;

@@ -8,9 +8,12 @@
 
 	<context:component-scan base-package="com.jxgyl" />
 	
+	<context:property-placeholder location="classpath:conf/*.properties"/>
+	
 	<import resource="spring-concurrent.xml"/>
 	<import resource="spring-email.xml"/>
 	<import resource="spring-thymeleaf.xml"/>
+	<import resource="spring-data.xml"/>
 	<import resource="../dubbo/dubbo-client.xml"/>
 	
 </beans>

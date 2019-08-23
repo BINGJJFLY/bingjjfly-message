@@ -44,7 +44,7 @@ public class MessageRedisProducer implements MessageProducer {
 			try {
 				Long count = pushEmailFuture.get();
 				if (count > 0) {
-					executor.submit(new ReidsMQSession(listener, consumer));
+					executor.execute(new ReidsMQSession(listener, consumer));
 				}
 			} catch (Exception e) {
 				LOGGER.error("【生产者生产Email信息时异常】\r\n{}", Arrays.toString(emails));

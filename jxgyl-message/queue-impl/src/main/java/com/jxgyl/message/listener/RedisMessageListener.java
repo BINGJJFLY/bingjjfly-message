@@ -1,23 +1,35 @@
 package com.jxgyl.message.listener;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import javax.annotation.Resource;
+
 import org.springframework.stereotype.Service;
 
 import com.jxgyl.message.Message;
 import com.jxgyl.message.MessageSender;
 
+/**
+ * Redis组件
+ *
+ * @author iss002
+ *
+ */
 @Service("redisMessageListener")
 public class RedisMessageListener implements MessageListener {
-	
-	@Autowired
-	@Qualifier("emailSender")
+
+	@Resource(name = "emailSender")
 	private MessageSender messageSender;
 
 	@Override
 	public void onMessage(Message msg) {
-		if (Message.MessageTypeEnum.EMAIL.name().equals(msg.getType().name())) {
+		switch (msg.getType()) {
+		case EMAIL:
 			messageSender.send(msg);
+			break;
+		case TEXT:
+			// 发送短信
+			break;
+		default:
+			break;
 		}
 	}
 
