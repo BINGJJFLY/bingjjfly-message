@@ -1,11 +1,11 @@
 package com.jxgyl.message.email;
 
-import java.io.File;
-
+import javax.activation.DataHandler;
 import javax.mail.BodyPart;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import javax.mail.internet.MimeUtility;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +19,8 @@ import com.jxgyl.message.Attachment;
 import com.jxgyl.message.Message;
 import com.jxgyl.message.MessageSender;
 import com.jxgyl.message.logging.Slf4jLoggingImpl;
+import com.jxgyl.message.resolver.DataSourceResolver;
+import com.jxgyl.message.resolver.FileDataSourceResolver;
 import com.jxgyl.message.thymeleaf.ThymeleafHelper;
 
 /**
@@ -29,7 +31,7 @@ import com.jxgyl.message.thymeleaf.ThymeleafHelper;
  */
 @Service("emailSender")
 public class EmailSender implements MessageSender {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(EmailSender.class);
 
 	@Autowired
@@ -42,6 +44,8 @@ public class EmailSender implements MessageSender {
 	private Slf4jLoggingImpl loggingService;
 	@Autowired
 	private ThreadPoolTaskExecutor executor;
+
+	private DataSourceResolver resolver = new FileDataSourceResolver();
 
 	@Override
 	public void send(Message... msgs) {
@@ -69,7 +73,7 @@ public class EmailSender implements MessageSender {
 		public void run() {
 			if (msg != null) {
 				try {
-					mailSender.send(mimeMessage(msg));
+					mailSender.send(mimeMessage());
 					loggingService.log(msg, true);
 				} catch (Exception e) {
 					LOGGER.error("【消费者消费Email信息时异常】\r\n", e);
@@ -78,35 +82,37 @@ public class EmailSender implements MessageSender {
 			}
 		}
 
-		private MimeMessageHelper mimeMessageHelper(MimeMessage mimeMessage, Message msg) throws Exception {
-			final MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
+		private MimeMessageHelper mimeMessageHelper(MimeMessage mimeMessage) throws Exception {
+			final MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
 			helper.setFrom(msg.getFrom() == null ? env.from() : msg.getFrom());
 			helper.setTo(msg.getTo());
 			helper.setSubject(msg.getSubject());
+			return helper;
+		}
+
+		private MimeMessage mimeMessage() throws Exception {
+			MimeMessage mimeMessage = mailSender.createMimeMessage();
+			mimeMessageHelper(mimeMessage);
+			mimeMessage.setContent(multipart());
+			return mimeMessage;
+		}
+
+		private MimeMultipart multipart() throws Exception {
+			final MimeMultipart multipart = new MimeMultipart();
+			final BodyPart body = new MimeBodyPart();
+			String content = thymeleafHelper.process(msg.getBusiness().getTemplate(), msg.getVars());
+			body.setContent(content == null ? msg.getText() : content, "text/html;charset=utf-8");
+			multipart.addBodyPart(body);
 			Attachment[] attachments = msg.getAttachments();
 			if (attachments != null) {
 				for (int j = 0; j < attachments.length; j++) {
 					Attachment attachment = attachments[j];
-					// TODO 附件实现类
-					helper.addAttachment(attachment.getName(), new File(env.dir() + attachment.getPath()));
+					final BodyPart attchBody = new MimeBodyPart();
+					attchBody.setFileName(MimeUtility.encodeText(attachment.getName()));
+					attchBody.setDataHandler(new DataHandler(resolver.resolve(env.dir(), attachment.getPath())));
+					multipart.addBodyPart(attchBody);
 				}
 			}
-			return helper;
-		}
-
-		private MimeMessage mimeMessage(Message msg) throws Exception {
-			MimeMessage mimeMessage = mailSender.createMimeMessage();
-			mimeMessageHelper(mimeMessage, msg);
-			String text = thymeleafHelper.process(msg.getBusiness().getTemplate(), msg.getVars());
-			mimeMessage.setContent(multipart(text == null ? msg.getText() : text));
-			return mimeMessage;
-		}
-
-		private MimeMultipart multipart(String content) throws Exception {
-			final MimeMultipart multipart = new MimeMultipart();
-			final BodyPart body = new MimeBodyPart();
-			body.setContent(content, "text/html;charset=utf-8");
-			multipart.addBodyPart(body);
 			return multipart;
 		}
 	}

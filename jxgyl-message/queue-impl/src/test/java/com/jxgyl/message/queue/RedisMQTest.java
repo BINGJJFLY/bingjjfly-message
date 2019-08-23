@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.jxgyl.message.Attachment;
 import com.jxgyl.message.Message;
 import com.jxgyl.message.MessageTemplateEnum;
 import com.jxgyl.message.Variable;
@@ -90,8 +91,8 @@ public class RedisMQTest {
 						cyclicBarrier.await();
 						System.out.println(Thread.currentThread().getName() + " is working.");
 						String[] to = { "wangjz@shougangfund.cn" };
-						String subject = "我爱我的祖国，我们都是共产主义接班人";
-						String text = "我爱我的祖国，我们都是共产主义接班人，五十六个民族，五十六支花，五十六个民族是一家。";
+						String subject = "生产者同步生产，消费者异步消费";
+						String text = "生产者同步生产，消费者异步消费";
 						producer.produceEmail(Message.createEmail(from, to, subject, text, Arrays.asList(Variable.createVar("name", text)), MessageTemplateEnum.IMPORT_USER));
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -107,4 +108,16 @@ public class RedisMQTest {
 		}
 	}
 	
+	@Test
+	public void attachmentEmail() {
+		try {
+			String[] to = { "wangjz@shougangfund.cn" };
+			String subject = "测试发送带附件的Email";
+			String text = "测试发送带附件的Email";
+			producer.produceEmail(Message.createEmail(from, to, subject, text, Arrays.asList(Variable.createVar("name", text)), MessageTemplateEnum.IMPORT_USER, Attachment.createAttach("iss002.png", "iss002.png"), Attachment.createAttach("plugin.zip", "plugin.zip")));
+			Thread.sleep(7000);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }
