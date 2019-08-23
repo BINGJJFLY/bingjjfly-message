@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+	http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+	<dubbo:application name="message-queue-impl" architecture="beijing" version="1.0" owner="iss002" organization="jxgyl"/>
+	
+	<dubbo:registry address="${zookeeper.address}" client="zkclient" timeout="10000"/>
+
+	<dubbo:protocol name="dubbo" port="20890"/>
+	
+	<dubbo:service protocol="dubbo" interface="com.jxgyl.message.queue.consumer.MessageConsumer" ref="messageRedisConsumer" version="1.0" timeout="100000" path="dubbo/messageRedisConsumer" />
+	<dubbo:service protocol="dubbo" interface="com.jxgyl.message.queue.producer.MessageProducer" ref="messageRedisProducer" version="1.0" timeout="100000" path="dubbo/messageRedisProducer" />
+	<dubbo:reference interface="com.jxgyl.message.MessageSender" id="emailSender" version="1.0" check="false" />
+	
+</beans>

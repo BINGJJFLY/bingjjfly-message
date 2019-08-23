@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd ">
+
+	<dubbo:application name="message-impl" architecture="beijing" version="1.0" owner="iss002" organization="jxgyl"/>
+	<dubbo:registry address="${zookeeper.address}" client="zkclient"/>
+	
+	<dubbo:protocol name="dubbo" port="20891"/>
+	
+	<dubbo:reference interface="com.jxgyl.message.queue.consumer.MessageConsumer" id="messageRedisConsumer" version="1.0" check="false" />
+	<dubbo:reference interface="com.jxgyl.message.queue.producer.MessageProducer" id="messageRedisProducer" version="1.0" check="false" />
+	<dubbo:service protocol="dubbo" interface="com.jxgyl.message.MessageSender" ref="emailSender" version="1.0" timeout="100000" path="dubbo/emailSender" />
+		
+</beans>
