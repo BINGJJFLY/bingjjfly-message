@@ -1,5 +1,7 @@
 package com.jxgyl.message.email;
 
+import java.util.Arrays;
+
 import javax.activation.DataHandler;
 import javax.mail.BodyPart;
 import javax.mail.internet.MimeBodyPart;
@@ -49,10 +51,8 @@ public class EmailSender implements MessageSender {
 
 	@Override
 	public void send(Message... msgs) {
-		if (msgs != null && msgs.length > 0) {
-			for (int i = 0; i < msgs.length; i++) {
-				executor.execute(new SendEmailTask(msgs[i]));
-			}
+		if (msgs != null) {
+			Arrays.stream(msgs).forEach(msg -> executor.execute(new SendEmailTask(msg)));
 		}
 	}
 
