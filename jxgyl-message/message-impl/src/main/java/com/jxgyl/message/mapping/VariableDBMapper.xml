@@ -8,4 +8,14 @@
 		<result column="VAL" property="val" jdbcType="VARCHAR" />
 		<result column="ADD_TIME" property="addTime" jdbcType="TIMESTAMP" />
 	</resultMap>
+	
+	<insert id="batchInsert" parameterType="java.util.List">
+		insert into VARIABLE (ID, MSG_ID, NAME, VAL, ADD_TIME)
+    	values 
+		<foreach collection="list" item="var" separator=",">
+			(#{var.id,jdbcType=INTEGER}, #{var.msgId,jdbcType=INTEGER}, #{var.name,jdbcType=VARCHAR}, 
+      		 #{var.val,jdbcType=VARCHAR}, #{var.addTime,jdbcType=TIMESTAMP})
+		</foreach>
+	</insert>
+	
 </mapper>

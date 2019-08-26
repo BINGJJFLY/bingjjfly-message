@@ -9,4 +9,13 @@
 		<result column="PATH" jdbcType="VARCHAR" property="path" />
 		<result column="ADD_TIME" jdbcType="TIMESTAMP" property="addTime" />
 	</resultMap>
+	
+	<insert id="batchInsert" parameterType="java.util.List">
+		insert into ATTACHMENT (ID, MSG_ID, NAME, PATH, ADD_TIME)
+    	values 
+    	<foreach collection="list" item="attach" separator=",">
+    		(#{attach.id,jdbcType=INTEGER}, #{attach.msgId,jdbcType=INTEGER}, #{attach.name,jdbcType=VARCHAR}, 
+      		 #{attach.path,jdbcType=VARCHAR}, #{attach.addTime,jdbcType=TIMESTAMP})
+      	</foreach>
+	</insert>
 </mapper>
