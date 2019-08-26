@@ -86,7 +86,7 @@ public class EmailSender implements MessageSender {
 			final MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
 			helper.setFrom(msg.getFrom() == null ? env.from() : msg.getFrom());
 			helper.setTo(msg.getTo());
-			helper.setSubject(msg.getSubject());
+			helper.setSubject(msg.getSubject() == null ? msg.getBusiness().getSubject() : msg.getSubject());
 			// 添加内容
 			text(helper);
 			// 添加嵌入式附件

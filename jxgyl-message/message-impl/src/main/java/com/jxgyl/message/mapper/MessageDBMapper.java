@@ -8,4 +8,10 @@ public interface MessageDBMapper {
 
 	void batchInsert(List<Message_DB> list);
 
+	void batchUpdate(List<Integer> list);
+
+	List<Message_DB> selectAbnormal();
+
+	List<Integer> selectPrimarykeysByIdentifyIds(List<String> identities);
+
 }

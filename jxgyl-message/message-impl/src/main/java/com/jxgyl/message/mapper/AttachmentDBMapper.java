@@ -8,4 +8,6 @@ public interface AttachmentDBMapper {
 
 	void batchInsert(List<Attachment_DB> list);
 
+	void batchUpdate(List<Integer> list);
+
 }

@@ -2,6 +2,7 @@ package com.jxgyl.message.service;
 
 import java.util.List;
 
+import com.jxgyl.message.MessageException;
 import com.jxgyl.message.service.domain.Attachment_DB;
 
 /**
@@ -11,7 +12,22 @@ import com.jxgyl.message.service.domain.Attachment_DB;
  *
  */
 public interface AttachmentDBService {
-	
-	void batchInsert(List<Attachment_DB> attachs);
+
+	/**
+	 * 入库
+	 * 
+	 * @param attachs
+	 * @throws MessageException
+	 */
+	void batchInsert(List<Attachment_DB> attachs) throws MessageException;
+
+	/**
+	 * 标记异常
+	 * 
+	 * @param msgIds
+	 *            Message_DB的主键
+	 * @throws MessageException
+	 */
+	void markAbnormal(List<Integer> msgIds) throws MessageException;
 
 }

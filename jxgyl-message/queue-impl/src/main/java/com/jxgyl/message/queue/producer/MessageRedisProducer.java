@@ -40,6 +40,7 @@ public class MessageRedisProducer implements MessageProducer {
 	@Override
 	public void produceEmail(Message... emails) {
 		if (emails != null && emails.length > 0) {
+			LOGGER.trace("【生产者生产Email信息准备存入Redis】\r\n{}", Arrays.toString(emails));
 			Future<Long> pushEmailFuture = executor.submit(new PushEmailTask(emails));
 			try {
 				Long count = pushEmailFuture.get();
@@ -72,6 +73,5 @@ public class MessageRedisProducer implements MessageProducer {
 			LOGGER.info("【Email信息存入Redis】\r\n{}", Arrays.toString(emails));
 			return count;
 		}
-
 	}
 }

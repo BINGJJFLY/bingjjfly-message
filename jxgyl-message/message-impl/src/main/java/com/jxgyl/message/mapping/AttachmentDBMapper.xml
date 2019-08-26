@@ -8,14 +8,27 @@
 		<result column="NAME" jdbcType="VARCHAR" property="name" />
 		<result column="PATH" jdbcType="VARCHAR" property="path" />
 		<result column="ADD_TIME" jdbcType="TIMESTAMP" property="addTime" />
+		<result column="STATUS" jdbcType="INTEGER" property="status" />
 	</resultMap>
 	
 	<insert id="batchInsert" parameterType="java.util.List">
-		insert into ATTACHMENT (ID, MSG_ID, NAME, PATH, ADD_TIME)
+		insert into ATTACHMENT (ID, MSG_ID, NAME, PATH, ADD_TIME, STATUS)
     	values 
     	<foreach collection="list" item="attach" separator=",">
     		(#{attach.id,jdbcType=INTEGER}, #{attach.msgId,jdbcType=INTEGER}, #{attach.name,jdbcType=VARCHAR}, 
-      		 #{attach.path,jdbcType=VARCHAR}, #{attach.addTime,jdbcType=TIMESTAMP})
+      		 #{attach.path,jdbcType=VARCHAR}, #{attach.addTime,jdbcType=TIMESTAMP}, #{attach.status,jdbcType=INTEGER})
       	</foreach>
 	</insert>
+	
+	<select id="selectAbnormal" resultMap="BaseResultMap">
+		select * from ATTACHMENT where MSG_ID = #{msgId} and STATUS = '0'
+	</select>
+	
+	<update id="batchUpdate" parameterType="string">
+		update ATTACHMENT set STATUS = '0'
+		where MSG_ID in
+		<foreach collection="list" item="msgId" open="(" close=")" separator=",">
+		#{msgId }
+		</foreach>
+	</update>
 </mapper>

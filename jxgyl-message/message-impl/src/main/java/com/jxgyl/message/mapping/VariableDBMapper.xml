@@ -7,15 +7,27 @@
 		<result column="NAME" property="name" jdbcType="VARCHAR" />
 		<result column="VAL" property="val" jdbcType="VARCHAR" />
 		<result column="ADD_TIME" property="addTime" jdbcType="TIMESTAMP" />
+		<result column="STATUS" jdbcType="INTEGER" property="status" />
 	</resultMap>
 	
 	<insert id="batchInsert" parameterType="java.util.List">
-		insert into VARIABLE (ID, MSG_ID, NAME, VAL, ADD_TIME)
+		insert into VARIABLE (ID, MSG_ID, NAME, VAL, ADD_TIME, STATUS)
     	values 
 		<foreach collection="list" item="var" separator=",">
 			(#{var.id,jdbcType=INTEGER}, #{var.msgId,jdbcType=INTEGER}, #{var.name,jdbcType=VARCHAR}, 
-      		 #{var.val,jdbcType=VARCHAR}, #{var.addTime,jdbcType=TIMESTAMP})
+      		 #{var.val,jdbcType=VARCHAR}, #{var.addTime,jdbcType=TIMESTAMP}, #{var.status,jdbcType=INTEGER})
 		</foreach>
 	</insert>
 	
+	<select id="selectAbnormal" resultMap="BaseResultMap">
+		select * from VARIABLE where MSG_ID = #{msgId} and STATUS = '0'
+	</select>
+	
+	<update id="batchUpdate" parameterType="string">
+		update VARIABLE set STATUS = '0'
+		where MSG_ID in
+		<foreach collection="list" item="msgId" open="(" close=")" separator=",">
+		#{msgId }
+		</foreach>
+	</update>
 </mapper>

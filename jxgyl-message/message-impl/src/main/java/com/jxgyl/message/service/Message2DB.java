@@ -1,23 +1,28 @@
 package com.jxgyl.message.service;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 
 import com.jxgyl.message.Message;
 import com.jxgyl.message.service.domain.Message_DB;
 
+/**
+ * 信息转数据库类型
+ *
+ * @author iss002
+ *
+ */
 public class Message2DB {
 
 	public static List<Message_DB> msg2DB(Message... msgs) {
-		List<Message_DB> dbs = null;
 		if (msgs != null && msgs.length > 0) {
-			dbs = new ArrayList<Message_DB>(msgs.length);
-			for (int i = 0; i < msgs.length; i++) {
-				dbs.add(toDB(msgs[i]));
-			}
+			final List<Message_DB> dbs = new ArrayList<Message_DB>(msgs.length);
+			Arrays.stream(msgs).forEach(msg -> dbs.add(toDB(msg)));
+			return dbs;
 		}
-		return dbs;
+		return null;
 	}
 
 	private static Message_DB toDB(Message msg) {
@@ -30,7 +35,11 @@ public class Message2DB {
 			db.setTemplate(msg.getBusiness().getTemplate());
 			db.setText(msg.getText());
 			db.setType(msg.getType().name());
-			db.setAddTime(new Date());
+			db.setAddTime(Calendar.getInstance().getTime());
+			db.setStatus(StatusEnum.SUCCESS.status);
+			db.setIdentifyId(msg.getIdentifyId());
+			db.setAttachs(Attachment2DB.attach2DB(null, msg.getAttachments()));
+			db.setVars(Variable2DB.var2DB(null, msg.getVars()));
 		}
 		return db;
 	}
@@ -47,4 +56,12 @@ public class Message2DB {
 		return result;
 	}
 
+	public static enum StatusEnum {
+		SUCCESS(1), ERROR(0);
+		public Integer status;
+
+		private StatusEnum(Integer status) {
+			this.status = status;
+		}
+	}
 }

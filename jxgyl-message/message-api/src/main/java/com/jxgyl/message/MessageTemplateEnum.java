@@ -17,7 +17,7 @@ public enum MessageTemplateEnum {
 	/**
 	 * 纯文本，不使用任何模板
 	 */
-	PURE_TEXT(null) {
+	PURE_TEXT(null, null) {
 		@Override
 		public Map<String, String> embedded() {
 			return null;
@@ -26,13 +26,16 @@ public enum MessageTemplateEnum {
 	/**
 	 * 导入用户
 	 */
-	IMPORT_USER("IMPORT_USER") {
+	IMPORT_USER("IMPORT_USER", "导入用户") {
 		@Override
 		public Map<String, String> embedded() {
 			return null;
 		}
 	},
-	RESET_PASSWORD("RESET_PASSWORD") {
+	/**
+	 * 用户重置密码
+	 */
+	RESET_PASSWORD("RESET_PASSWORD", "用户重置密码") {
 		@Override
 		public Map<String, String> embedded() {
 			Map<String, String> embedded = new HashMap<String, String>();
@@ -42,13 +45,19 @@ public enum MessageTemplateEnum {
 	};
 
 	private String template;
+	private String subject;
 
-	private MessageTemplateEnum(String template) {
+	private MessageTemplateEnum(String template, String subject) {
 		this.template = template;
+		this.subject = subject;
 	}
 
 	public String getTemplate() {
 		return template;
+	}
+
+	public String getSubject() {
+		return subject;
 	}
 
 	/**

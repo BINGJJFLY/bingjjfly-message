@@ -23,6 +23,8 @@ public class Attachment_DB implements Serializable {
 
 	private Date addTime;
 
+	private Integer status;
+
 	public Integer getId() {
 		return id;
 	}
@@ -63,6 +65,14 @@ public class Attachment_DB implements Serializable {
 		this.addTime = addTime;
 	}
 
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -72,6 +82,7 @@ public class Attachment_DB implements Serializable {
 		result = prime * result + ((msgId == null) ? 0 : msgId.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((path == null) ? 0 : path.hashCode());
+		result = prime * result + ((status == null) ? 0 : status.hashCode());
 		return result;
 	}
 
@@ -109,13 +120,18 @@ public class Attachment_DB implements Serializable {
 				return false;
 		} else if (!path.equals(other.path))
 			return false;
+		if (status == null) {
+			if (other.status != null)
+				return false;
+		} else if (!status.equals(other.status))
+			return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
 		return "Attachment_DB [id=" + id + ", msgId=" + msgId + ", name=" + name + ", path=" + path + ", addTime="
-				+ addTime + "]";
+				+ addTime + ", status=" + status + "]";
 	}
 
 }
