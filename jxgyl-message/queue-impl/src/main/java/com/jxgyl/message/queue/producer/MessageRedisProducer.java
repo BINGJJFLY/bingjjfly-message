@@ -47,7 +47,7 @@ public class MessageRedisProducer implements MessageProducer {
 					executor.execute(new ReidsMQSession(listener, consumer));
 				}
 			} catch (Exception e) {
-				LOGGER.error("【生产者生产Email信息时异常】\r\n{}", Arrays.toString(emails));
+				LOGGER.error("【生产者生产Email信息时异常】\r\n{}", Arrays.toString(emails), e);
 			}
 		}
 	}

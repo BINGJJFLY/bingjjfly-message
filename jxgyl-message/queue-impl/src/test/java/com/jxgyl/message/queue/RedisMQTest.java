@@ -120,4 +120,17 @@ public class RedisMQTest {
 			e.printStackTrace();
 		}
 	}
+	
+	@Test
+	public void embeddedAttachmentEmail() {
+		try {
+			String[] to = { "wangjz@shougangfund.cn" };
+			String subject = "测试发送带内嵌式图片的Email";
+			String text = "测试发送带内嵌式图片的Email";
+			producer.produceEmail(Message.createEmail(from, to, subject, text, Arrays.asList(Variable.createVar("name", text)), MessageTemplateEnum.RESET_PASSWORD));
+			Thread.sleep(7000);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }
