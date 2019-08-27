@@ -1,4 +1,4 @@
-package com.jxgyl.message.service;
+package com.jxgyl.message.service.converter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -6,7 +6,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import com.jxgyl.message.Attachment;
-import com.jxgyl.message.service.Message2DB.StatusEnum;
+import com.jxgyl.message.service.converter.Message2DB.StatusEnum;
 import com.jxgyl.message.service.domain.Attachment_DB;
 
 /**
@@ -18,7 +18,7 @@ import com.jxgyl.message.service.domain.Attachment_DB;
 public class Attachment2DB {
 
 	public static List<Attachment_DB> attach2DB(final Integer msgId, Attachment... attachs) {
-		if (attachs != null && attachs.length > 0) {
+		if (attachs != null) {
 			final List<Attachment_DB> dbs = new ArrayList<Attachment_DB>(attachs.length);
 			Arrays.stream(attachs).forEach(attach -> dbs.add(toDB(msgId, attach)));
 			return dbs;

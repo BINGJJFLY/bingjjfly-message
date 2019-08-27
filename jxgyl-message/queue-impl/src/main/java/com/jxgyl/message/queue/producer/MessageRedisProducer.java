@@ -15,6 +15,7 @@ import com.jxgyl.message.Message;
 import com.jxgyl.message.listener.RedisMessageListener;
 import com.jxgyl.message.queue.RedisMQ;
 import com.jxgyl.message.queue.consumer.MessageRedisConsumer;
+import com.jxgyl.message.service.MessageService;
 import com.jxgyl.message.session.ReidsMQSession;
 
 /**
@@ -36,10 +37,13 @@ public class MessageRedisProducer implements MessageProducer {
 	private RedisMessageListener listener;
 	@Autowired
 	private MessageRedisConsumer consumer;
+	@Autowired
+	private MessageService messageService;
 
 	@Override
 	public void produceEmail(Message... emails) {
 		if (emails != null && emails.length > 0) {
+			executor.execute(new StoreEmailTask(emails));
 			LOGGER.trace("【生产者生产Email信息准备存入Redis】\r\n{}", Arrays.toString(emails));
 			Future<Long> pushEmailFuture = executor.submit(new PushEmailTask(emails));
 			try {
@@ -72,6 +76,19 @@ public class MessageRedisProducer implements MessageProducer {
 			Long count = redisTemplate.boundListOps(RedisMQ.EMAIL_QUEUE).leftPush(emails);
 			LOGGER.info("【Email信息存入Redis】\r\n{}", Arrays.toString(emails));
 			return count;
+		}
+	}
+
+	class StoreEmailTask implements Runnable {
+		Message[] emails;
+
+		StoreEmailTask(Message[] emails) {
+			this.emails = emails;
+		}
+
+		@Override
+		public void run() {
+			messageService.batchInsert(emails);
 		}
 	}
 }

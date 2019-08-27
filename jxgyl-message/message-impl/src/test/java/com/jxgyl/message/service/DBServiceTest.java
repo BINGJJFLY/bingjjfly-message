@@ -16,6 +16,12 @@ import com.jxgyl.message.Attachment;
 import com.jxgyl.message.Message;
 import com.jxgyl.message.MessageTemplateEnum;
 import com.jxgyl.message.Variable;
+import com.jxgyl.message.service.api.AttachmentDBService;
+import com.jxgyl.message.service.api.MessageDBService;
+import com.jxgyl.message.service.api.VariableDBService;
+import com.jxgyl.message.service.converter.Attachment2DB;
+import com.jxgyl.message.service.converter.Message2DB;
+import com.jxgyl.message.service.converter.Variable2DB;
 import com.jxgyl.message.service.domain.Attachment_DB;
 import com.jxgyl.message.service.domain.Message_DB;
 

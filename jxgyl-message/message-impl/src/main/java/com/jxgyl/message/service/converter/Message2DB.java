@@ -1,4 +1,4 @@
-package com.jxgyl.message.service;
+package com.jxgyl.message.service.converter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,7 +17,7 @@ import com.jxgyl.message.service.domain.Message_DB;
 public class Message2DB {
 
 	public static List<Message_DB> msg2DB(Message... msgs) {
-		if (msgs != null && msgs.length > 0) {
+		if (msgs != null) {
 			final List<Message_DB> dbs = new ArrayList<Message_DB>(msgs.length);
 			Arrays.stream(msgs).forEach(msg -> dbs.add(toDB(msg)));
 			return dbs;

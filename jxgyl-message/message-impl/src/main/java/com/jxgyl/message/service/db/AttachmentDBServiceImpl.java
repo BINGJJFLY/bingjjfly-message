@@ -1,4 +1,4 @@
-package com.jxgyl.message.service;
+package com.jxgyl.message.service.db;
 
 import java.util.List;
 
@@ -9,6 +9,7 @@ import org.springframework.util.CollectionUtils;
 
 import com.jxgyl.message.MessageException;
 import com.jxgyl.message.mapper.AttachmentDBMapper;
+import com.jxgyl.message.service.api.AttachmentDBService;
 import com.jxgyl.message.service.domain.Attachment_DB;
 
 @Transactional

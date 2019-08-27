@@ -1,4 +1,4 @@
-package com.jxgyl.message.service;
+package com.jxgyl.message.service.db;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import com.jxgyl.message.mapper.MessageDBMapper;
+import com.jxgyl.message.service.api.AttachmentDBService;
+import com.jxgyl.message.service.api.MessageDBService;
+import com.jxgyl.message.service.api.VariableDBService;
 import com.jxgyl.message.service.domain.Attachment_DB;
 import com.jxgyl.message.service.domain.Message_DB;
 import com.jxgyl.message.service.domain.Variable_DB;
@@ -40,12 +43,12 @@ public class MessageDBServiceImpl implements MessageDBService {
 					final List<Variable_DB> vdbs = msg.getVars();
 					if (!CollectionUtils.isEmpty(adbs)) {
 						adbs.forEach(adb -> adb.setMsgId(msg.getId()));
+						attachs.addAll(adbs);
 					}
 					if (!CollectionUtils.isEmpty(vdbs)) {
 						vdbs.forEach(vdb -> vdb.setMsgId(msg.getId()));
+						vars.addAll(vdbs);
 					}
-					attachs.addAll(adbs);
-					vars.addAll(vdbs);
 				});
 				attachmentDBService.batchInsert(attachs);
 				variableDBService.batchInsert(vars);

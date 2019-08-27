@@ -1,4 +1,4 @@
-package com.jxgyl.message.service;
+package com.jxgyl.message.service.api;
 
 import java.util.List;
 

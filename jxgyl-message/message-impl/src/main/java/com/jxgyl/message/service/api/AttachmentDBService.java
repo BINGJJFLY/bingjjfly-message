@@ -1,25 +1,25 @@
-package com.jxgyl.message.service;
+package com.jxgyl.message.service.api;
 
 import java.util.List;
 
 import com.jxgyl.message.MessageException;
-import com.jxgyl.message.service.domain.Variable_DB;
+import com.jxgyl.message.service.domain.Attachment_DB;
 
 /**
- * 域值对入库
+ * 消息附件入库
  *
  * @author iss002
  *
  */
-public interface VariableDBService {
+public interface AttachmentDBService {
 
 	/**
 	 * 入库
 	 * 
-	 * @param vars
+	 * @param attachs
 	 * @throws MessageException
 	 */
-	void batchInsert(List<Variable_DB> vars) throws MessageException;
+	void batchInsert(List<Attachment_DB> attachs) throws MessageException;
 
 	/**
 	 * 标记异常
