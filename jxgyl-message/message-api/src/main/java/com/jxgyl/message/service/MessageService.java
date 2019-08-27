@@ -16,5 +16,12 @@ public interface MessageService {
 	 * @param msgs
 	 */
 	void batchInsert(Message... msgs);
+	
+	/**
+	 * 标记异常
+	 * 
+	 * @param msgs
+	 */
+	void markAbnormal(Message... msgs);
 
 }

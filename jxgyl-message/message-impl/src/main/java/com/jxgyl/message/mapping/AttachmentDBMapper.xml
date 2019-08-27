@@ -24,7 +24,7 @@
 		select * from ATTACHMENT where MSG_ID = #{msgId} and STATUS = '0'
 	</select>
 	
-	<update id="batchUpdate" parameterType="string">
+	<update id="batchUpdate" parameterType="int">
 		update ATTACHMENT set STATUS = '0'
 		where MSG_ID in
 		<foreach collection="list" item="msgId" open="(" close=")" separator=",">

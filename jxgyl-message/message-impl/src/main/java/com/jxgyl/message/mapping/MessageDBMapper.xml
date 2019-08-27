@@ -44,7 +44,7 @@
 		select * from MESSAGE where STATUS = '0'
 	</select>
 	
-	<update id="batchUpdate" parameterType="string">
+	<update id="batchUpdate" parameterType="int">
 		update MESSAGE set STATUS = '0' 
 		where ID in 
 		<foreach collection="list" item="id" open="(" close=")" separator=",">
