@@ -51,7 +51,7 @@ public class EmailSender implements MessageSender {
 	@Override
 	public void send(Message... msgs) {
 		if (msgs != null) {
-			Arrays.stream(msgs).forEach(msg -> executor.execute(new SendEmailTask(msg)));
+			Arrays.stream(msgs).forEach(msg -> executor.submit(new SendEmailTask(msg)));
 		}
 	}
 

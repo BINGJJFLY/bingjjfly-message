@@ -30,4 +30,11 @@ public interface AttachmentDBService {
 	 */
 	void markAbnormal(List<Integer> msgIds) throws MessageException;
 
+	/**
+	 * 标记正常
+	 * 
+	 * @param msgIds
+	 */
+	void markNormal(List<Integer> msgIds) throws MessageException;
+
 }

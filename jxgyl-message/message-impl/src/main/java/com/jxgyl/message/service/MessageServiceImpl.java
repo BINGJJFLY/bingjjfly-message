@@ -33,4 +33,18 @@ public class MessageServiceImpl implements MessageService {
 		}
 	}
 
+	@Override
+	public Message[] selectAbnormal() {
+		return Message2DB.db2Msg(messageDBService.selectAbnormal());
+	}
+
+	@Override
+	public void markNormal(Message... msgs) {
+		if (msgs != null) {
+			final List<String> identifyIds = new ArrayList<String>(msgs.length);
+			Arrays.stream(msgs).forEach(msg -> identifyIds.add(msg.getIdentifyId()));
+			messageDBService.markNormal(identifyIds);
+		}
+	}
+
 }

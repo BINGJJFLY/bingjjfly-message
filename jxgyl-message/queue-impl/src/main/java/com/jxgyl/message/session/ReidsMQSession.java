@@ -18,7 +18,7 @@ public class ReidsMQSession implements Session {
 
 	private RedisMessageListener listener;
 	private MessageRedisConsumer consumer;
-	
+
 	public ReidsMQSession(RedisMessageListener listener, MessageRedisConsumer consumer) {
 		this.listener = listener;
 		this.consumer = consumer;
@@ -27,7 +27,9 @@ public class ReidsMQSession implements Session {
 	@Override
 	public void run() {
 		for (List<Message> msgs; !CollectionUtils.isEmpty(msgs = consumer.consumeEmail());) {
-			msgs.forEach(msg -> listener.onMessage(msg));
+			if (msgs != null) {
+				listener.onMessage(msgs.toArray(new Message[] {}));
+			}
 		}
 	}
 

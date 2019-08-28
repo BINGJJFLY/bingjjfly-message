@@ -6,6 +6,8 @@ import java.util.Calendar;
 import java.util.List;
 
 import com.jxgyl.message.Message;
+import com.jxgyl.message.Message.MessageTypeEnum;
+import com.jxgyl.message.MessageTemplateEnum;
 import com.jxgyl.message.service.domain.Message_DB;
 
 /**
@@ -25,6 +27,27 @@ public class Message2DB {
 		return null;
 	}
 
+	public static Message[] db2Msg(List<Message_DB> dbs) {
+		if (dbs != null) {
+			final List<Message> msgs = new ArrayList<Message>(dbs.size());
+			dbs.forEach(db -> msgs.add(toMsg(db)));
+			return msgs.toArray(new Message[] {});
+		}
+		return null;
+	}
+
+	private static Message toMsg(Message_DB db) {
+		Message msg = null;
+		if (db != null) {
+			if (MessageTypeEnum.EMAIL.name().equals(db.getType())) {
+				msg = Message.createEmail(db.getSender(), resolveTos(db.getReceiver()), db.getSubject(), db.getText(),
+						Variable2DB.db2Var(db.getVars()), MessageTemplateEnum.mte(db.getTemplate()),
+						Attachment2DB.db2Attach(db.getAttachs())).identifyId(db.getIdentifyId());
+			}
+		}
+		return msg;
+	}
+
 	private static Message_DB toDB(Message msg) {
 		Message_DB db = null;
 		if (msg != null) {
@@ -36,12 +59,19 @@ public class Message2DB {
 			db.setText(msg.getText());
 			db.setType(msg.getType().name());
 			db.setAddTime(Calendar.getInstance().getTime());
-			db.setStatus(StatusEnum.SUCCESS.status);
+			db.setStatus(StatusEnum.ERROR.status);
 			db.setIdentifyId(msg.getIdentifyId());
 			db.setAttachs(Attachment2DB.attach2DB(null, msg.getAttachments()));
 			db.setVars(Variable2DB.var2DB(null, msg.getVars()));
 		}
 		return db;
+	}
+
+	private static String[] resolveTos(String tos) {
+		if (tos != null) {
+			return tos.split(",");
+		}
+		return null;
 	}
 
 	private static String resolveTos(String[] tos) {

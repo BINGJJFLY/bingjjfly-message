@@ -128,7 +128,7 @@ public class RedisMQTest {
 			String[] to = { "wangjz@shougangfund.cn" };
 			String subject = null;
 			String text = null;
-			producer.produceEmail(Message.createEmail(from, to, subject, text, Arrays.asList(Variable.createVar("name", text)), MessageTemplateEnum.RESET_PASSWORD));
+			producer.produceEmail(Message.createEmail(from, to, subject, text, Arrays.asList(Variable.createVar("username", "BINGJJFLY"), Variable.createVar("uuid", "wrenfas-fafdnsd-naqzdfp")), MessageTemplateEnum.RESET_PASSWORD));
 			Thread.sleep(7000);
 		} catch (Exception e) {
 			e.printStackTrace();

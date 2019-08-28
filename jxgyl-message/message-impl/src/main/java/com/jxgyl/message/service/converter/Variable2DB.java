@@ -25,6 +25,23 @@ public class Variable2DB {
 		return null;
 	}
 
+	public static List<Variable> db2Var(List<Variable_DB> dbs) {
+		if (dbs != null) {
+			final List<Variable> vars = new ArrayList<>(dbs.size());
+			dbs.forEach(db -> vars.add(toVar(db)));
+			return vars;
+		}
+		return null;
+	}
+
+	private static Variable toVar(Variable_DB db) {
+		Variable var = null;
+		if (db != null) {
+			var = Variable.createVar(db.getName(), db.getVal());
+		}
+		return var;
+	}
+
 	private static Variable_DB toDB(Integer msgId, Variable var) {
 		Variable_DB db = null;
 		if (var != null) {
@@ -33,7 +50,7 @@ public class Variable2DB {
 			db.setName(var.getName());
 			db.setVal(var.getValue());
 			db.setAddTime(Calendar.getInstance().getTime());
-			db.setStatus(StatusEnum.SUCCESS.status);
+			db.setStatus(StatusEnum.ERROR.status);
 		}
 		return db;
 	}

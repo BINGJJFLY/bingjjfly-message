@@ -23,7 +23,7 @@ public class Message implements Serializable {
 	private List<Variable> vars;
 	private MessageTypeEnum type;
 	private MessageTemplateEnum business;
-	private final String identifyId;
+	private String identifyId;
 
 	private Message(String[] to, String text, List<Variable> vars, MessageTypeEnum type, MessageTemplateEnum business) {
 		this.to = to;
@@ -163,6 +163,11 @@ public class Message implements Serializable {
 
 	public String getIdentifyId() {
 		return identifyId;
+	}
+
+	public Message identifyId(String identifyId) {
+		this.identifyId = identifyId;
+		return this;
 	}
 
 	@Override

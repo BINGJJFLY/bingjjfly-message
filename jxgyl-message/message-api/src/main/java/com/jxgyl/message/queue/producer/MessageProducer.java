@@ -15,7 +15,7 @@ import com.jxgyl.message.Message;
  * @author iss002
  *
  */
-public interface MessageProducer {
+public interface MessageProducer extends Runnable {
 
 	/**
 	 * 将Email放入消息队列中
@@ -23,6 +23,13 @@ public interface MessageProducer {
 	 * @param emails
 	 */
 	void produceEmail(Message... emails);
+	
+	/**
+	 * Email信息检错重发
+	 * 
+	 * @param emails
+	 */
+	void resendEmail(Message... emails);
 	
 	/**
 	 * 将短信放入消息队列中

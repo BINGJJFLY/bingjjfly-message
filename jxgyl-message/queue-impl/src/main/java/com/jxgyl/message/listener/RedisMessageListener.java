@@ -1,10 +1,15 @@
 package com.jxgyl.message.listener;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 
 import com.jxgyl.message.Message;
+import com.jxgyl.message.Message.MessageTypeEnum;
 import com.jxgyl.message.MessageSender;
 
 /**
@@ -17,20 +22,19 @@ import com.jxgyl.message.MessageSender;
 public class RedisMessageListener implements MessageListener {
 
 	@Resource(name = "emailSender")
-	private MessageSender messageSender;
+	private MessageSender emailSender;
 
 	@Override
-	public void onMessage(Message msg) {
-		switch (msg.getType()) {
-		case EMAIL:
-			messageSender.send(msg);
-			break;
-		case TEXT:
-			// 发送短信
-			break;
-		default:
-			break;
+	public void onMessage(Message... msgs) {
+		if (msgs != null) {
+			email(msgs);
 		}
+	}
+
+	private void email(Message[] msgs) {
+		List<Message> emails = Arrays.stream(msgs).filter(msg -> MessageTypeEnum.EMAIL.equals(msg.getType()))
+				.collect(Collectors.toList());
+		emailSender.send(emails.toArray(new Message[] {}));
 	}
 
 }

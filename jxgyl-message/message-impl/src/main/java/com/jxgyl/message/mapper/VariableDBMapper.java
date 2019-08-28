@@ -10,4 +10,6 @@ public interface VariableDBMapper {
 
 	void batchUpdate(List<Integer> list);
 
+	void batchUpdateNormal(List<Integer> list);
+
 }

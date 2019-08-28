@@ -30,4 +30,12 @@
 		#{msgId }
 		</foreach>
 	</update>
+	
+	<update id="batchUpdateNormal" parameterType="int">
+		update VARIABLE set STATUS = '1'
+		where MSG_ID in
+		<foreach collection="list" item="msgId" open="(" close=")" separator=",">
+		#{msgId }
+		</foreach>
+	</update>
 </mapper>

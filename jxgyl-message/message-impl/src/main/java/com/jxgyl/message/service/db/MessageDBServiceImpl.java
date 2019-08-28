@@ -63,19 +63,42 @@ public class MessageDBServiceImpl implements MessageDBService {
 	public void markAbnormal(List<String> list) {
 		try {
 			if (!CollectionUtils.isEmpty(list)) {
-				List<Integer> msgIds = selectPrimarykeysByIdentifyIds(list);
-				mapper.batchUpdate(msgIds);
-				attachmentDBService.markAbnormal(msgIds);
-				variableDBService.markAbnormal(msgIds);
-				LOGGER.info("【标记异常消息】\r\n{}", list);
+				List<Integer> msgIds = selectPrimarykeysByIdentifyIdsNormal(list);
+				if (!CollectionUtils.isEmpty(msgIds)) {
+					mapper.batchUpdate(msgIds);
+					attachmentDBService.markAbnormal(msgIds);
+					variableDBService.markAbnormal(msgIds);
+					LOGGER.info("【标记异常消息】\r\n{}", list);
+				}
 			}
 		} catch (Exception e) {
 			LOGGER.error("【标记异常消息时异常】\r\n{}", list, e);
 		}
 	}
+	
+	@Override
+	public void markNormal(List<String> list) {
+		try {
+			if (!CollectionUtils.isEmpty(list)) {
+				List<Integer> msgIds = selectPrimarykeysByIdentifyIdsAbnormal(list);
+				if (!CollectionUtils.isEmpty(msgIds)) {
+					mapper.batchUpdateNormal(msgIds);
+					attachmentDBService.markNormal(msgIds);
+					variableDBService.markNormal(msgIds);
+					LOGGER.info("【异常消息标记为正常】\r\n{}", list);
+				}
+			}
+		} catch (Exception e) {
+			LOGGER.error("【异常消息标记为正常时异常】\r\n{}", list, e);
+		}
+	}
 
-	private List<Integer> selectPrimarykeysByIdentifyIds(List<String> identities) {
-		return mapper.selectPrimarykeysByIdentifyIds(identities);
+	private List<Integer> selectPrimarykeysByIdentifyIdsAbnormal(List<String> identities) {
+		return mapper.selectPrimarykeysByIdentifyIdsAbnormal(identities);
+	}
+	
+	private List<Integer> selectPrimarykeysByIdentifyIdsNormal(List<String> identities) {
+		return mapper.selectPrimarykeysByIdentifyIdsNormal(identities);
 	}
 
 	@Override

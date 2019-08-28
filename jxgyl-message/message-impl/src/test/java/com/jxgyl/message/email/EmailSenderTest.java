@@ -97,7 +97,7 @@ public class EmailSenderTest {
 	public void send_5() {
 		String from = null;
 		String[] to = { "wangjz@shougangfund.cn" };
-		emailSender.send(Message.createEmail(from, to, subject, text, Arrays.asList(Variable.createVar("name", text)), MessageTemplateEnum.IMPORT_USER));
+		emailSender.send(Message.createEmail(from, to, "测试客户端授权码", text, Arrays.asList(Variable.createVar("name", text)), MessageTemplateEnum.IMPORT_USER));
 		try {
 			Thread.sleep(7000);
 		} catch (InterruptedException e) {

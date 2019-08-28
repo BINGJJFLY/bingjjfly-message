@@ -20,8 +20,8 @@ public interface MessageListener {
 	/**
 	 * 处理消息
 	 * 
-	 * @param msg
+	 * @param msgs
 	 */
-	void onMessage(Message msg);
+	void onMessage(Message... msgs);
 
 }

@@ -52,11 +52,29 @@
 		</foreach>
 	</update>
 	
-	<select id="selectPrimarykeysByIdentifyIds" resultType="int">
+	<update id="batchUpdateNormal" parameterType="int">
+		update MESSAGE set STATUS = '1' 
+		where ID in 
+		<foreach collection="list" item="id" open="(" close=")" separator=",">
+		#{id }
+		</foreach>
+	</update>
+	
+	<select id="selectPrimarykeysByIdentifyIdsAbnormal" resultType="int">
 		select ID from MESSAGE
 		where IDENTIFY_ID in 
 		<foreach collection="list" item="identifyId" open="(" close=")" separator=",">
 		#{identifyId }
 		</foreach>
+		and STATUS = '0'
+	</select>
+	
+	<select id="selectPrimarykeysByIdentifyIdsNormal" resultType="int">
+		select ID from MESSAGE
+		where IDENTIFY_ID in 
+		<foreach collection="list" item="identifyId" open="(" close=")" separator=",">
+		#{identifyId }
+		</foreach>
+		and STATUS = '1'
 	</select>
 </mapper>

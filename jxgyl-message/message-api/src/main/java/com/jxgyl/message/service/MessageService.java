@@ -23,5 +23,18 @@ public interface MessageService {
 	 * @param msgs
 	 */
 	void markAbnormal(Message... msgs);
+	
+	/**
+	 * 标记正常
+	 * 
+	 * @param msgs
+	 */
+	void markNormal(Message... msgs);
 
+	/**
+	 * 查询异常信息
+	 * 
+	 * @return
+	 */
+	Message[] selectAbnormal();
 }

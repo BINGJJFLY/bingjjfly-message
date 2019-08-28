@@ -39,7 +39,7 @@ public enum MessageTemplateEnum {
 		@Override
 		public Map<String, String> embedded() {
 			Map<String, String> embedded = new HashMap<String, String>();
-			embedded.put("logo", "static/images/logo.png");
+			embedded.put("logo", "static/images/logob.png");
 			return embedded;
 		}
 	};
@@ -58,6 +58,15 @@ public enum MessageTemplateEnum {
 
 	public String getSubject() {
 		return subject;
+	}
+
+	public static MessageTemplateEnum mte(String template) throws MessageException {
+		for (MessageTemplateEnum e : values()) {
+			if (e.name().equals(template)) {
+				return e;
+			}
+		}
+		throw new MessageException("【没有找到符合条件的信息模板】：模板名[" + template + "]");
 	}
 
 	/**

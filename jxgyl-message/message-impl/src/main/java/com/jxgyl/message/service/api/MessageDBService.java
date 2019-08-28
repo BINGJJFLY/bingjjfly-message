@@ -28,9 +28,18 @@ public interface MessageDBService {
 	void markAbnormal(List<String> list);
 
 	/**
+	 * 标记正常
+	 * 
+	 * @param identifyIds
+	 *            Message的UUID集合
+	 */
+	void markNormal(List<String> identifyIds);
+
+	/**
 	 * 查询异常信息
 	 * 
 	 * @return
 	 */
 	List<Message_DB> selectAbnormal();
+
 }

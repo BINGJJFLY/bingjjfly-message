@@ -30,4 +30,12 @@ public interface VariableDBService {
 	 */
 	void markAbnormal(List<Integer> msgIds) throws MessageException;
 
+	/**
+	 * 标记正常
+	 * 
+	 * @param msgIds
+	 * @throws MessageException
+	 */
+	void markNormal(List<Integer> msgIds) throws MessageException;
+
 }

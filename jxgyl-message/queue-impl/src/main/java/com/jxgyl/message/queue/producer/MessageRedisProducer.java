@@ -42,19 +42,36 @@ public class MessageRedisProducer implements MessageProducer {
 
 	@Override
 	public void produceEmail(Message... emails) {
+		produceEmail(true, emails);
+	}
+
+	@Override
+	public void resendEmail(Message... emails) {
+		produceEmail(false, emails);
+	}
+
+	private void produceEmail(boolean store, Message... emails) {
 		if (emails != null && emails.length > 0) {
-			executor.execute(new StoreEmailTask(emails));
+			if (store) {
+				executor.execute(new StoreEmailTask(emails));
+			}
+			
 			LOGGER.trace("【生产者生产Email信息准备存入Redis】\r\n{}", Arrays.toString(emails));
 			Future<Long> pushEmailFuture = executor.submit(new PushEmailTask(emails));
 			try {
 				Long count = pushEmailFuture.get();
 				if (count > 0) {
-					executor.execute(new ReidsMQSession(listener, consumer));
+					run();
 				}
 			} catch (Exception e) {
 				LOGGER.error("【生产者生产Email信息时异常】\r\n{}", Arrays.toString(emails), e);
 			}
 		}
+	}
+
+	@Override
+	public void run() {
+		executor.execute(new ReidsMQSession(listener, consumer));
 	}
 
 	@Override

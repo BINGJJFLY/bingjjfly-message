@@ -1,5 +1,7 @@
 package com.jxgyl.message.logging;
 
+import java.util.List;
+
 import com.jxgyl.message.Message;
 
 /**
@@ -18,5 +20,7 @@ import com.jxgyl.message.Message;
 public interface LoggingService {
 
 	void log(Message msg, boolean success);
+	
+	void logs(List<Message> msgs, boolean success);
 
 }

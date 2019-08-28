@@ -26,6 +26,23 @@ public class Attachment2DB {
 		return null;
 	}
 
+	public static Attachment[] db2Attach(List<Attachment_DB> dbs) {
+		if (dbs != null) {
+			final List<Attachment> attachs = new ArrayList<>(dbs.size());
+			dbs.forEach(db -> attachs.add(toAttach(db)));
+			return attachs.toArray(new Attachment[] {});
+		}
+		return null;
+	}
+
+	private static Attachment toAttach(Attachment_DB db) {
+		Attachment attach = null;
+		if (db != null) {
+			attach = Attachment.createAttach(db.getName(), db.getPath());
+		}
+		return attach;
+	}
+
 	private static Attachment_DB toDB(Integer msgId, Attachment attach) {
 		Attachment_DB db = null;
 		if (attach != null) {
@@ -34,7 +51,7 @@ public class Attachment2DB {
 			db.setName(attach.getName());
 			db.setPath(attach.getPath());
 			db.setAddTime(Calendar.getInstance().getTime());
-			db.setStatus(StatusEnum.SUCCESS.status);
+			db.setStatus(StatusEnum.ERROR.status);
 		}
 		return db;
 	}

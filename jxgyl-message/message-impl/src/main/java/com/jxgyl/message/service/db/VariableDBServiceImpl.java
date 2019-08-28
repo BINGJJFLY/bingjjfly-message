@@ -41,4 +41,15 @@ public class VariableDBServiceImpl implements VariableDBService {
 		}
 	}
 
+	@Override
+	public void markNormal(List<Integer> msgIds) throws MessageException {
+		try {
+			if (!CollectionUtils.isEmpty(msgIds)) {
+				mapper.batchUpdateNormal(msgIds);
+			}
+		} catch (Exception e) {
+			throw new MessageException(e);
+		}
+	}
+
 }
