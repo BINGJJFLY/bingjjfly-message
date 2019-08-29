@@ -8,7 +8,7 @@
 
 	<dubbo:application name="message-web" architecture="beijing" version="1.0" owner="iss002" organization="jxgyl"/>
 	
-	<dubbo:registry address="zookeeper://127.0.0.1:2181" client="zkclient" timeout="10000"/>
+	<dubbo:registry address="zookeeper://39.106.99.83:2181" client="zkclient" timeout="10000"/>
 
 	<dubbo:protocol name="dubbo" port="20892"/>
 	

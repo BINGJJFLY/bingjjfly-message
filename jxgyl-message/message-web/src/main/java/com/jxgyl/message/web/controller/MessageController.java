@@ -40,14 +40,14 @@ public class MessageController {
 	
 	@ResponseBody
 	@RequestMapping("/abs")
-	public void abs() {
+	public void abs(String to) {
 		String from = null;
-		String[] to = { "wangjz@shougangfund.cn" };
+		String[] tos = { to };
 		String subject = "测试条数";
 		String text = null;
 		Message[] msgs = new Message[200];
 		for (int i = 0; i < 200; i++) {
-			msgs[i] = Message.createEmail(from, to, subject + "_" + i, text, Arrays.asList(Variable.createVar("username", "BINGJJFLY"), Variable.createVar("uuid", "wrenfas-fafdnsd-naqzdfp")), MessageTemplateEnum.RESET_PASSWORD);
+			msgs[i] = Message.createEmail(from, tos, subject + "_" + i, text, Arrays.asList(Variable.createVar("username", "BINGJJFLY"), Variable.createVar("uuid", "wrenfas-fafdnsd-naqzdfp")), MessageTemplateEnum.RESET_PASSWORD);
 		}
 		producer.produceEmail(msgs);
 	}
