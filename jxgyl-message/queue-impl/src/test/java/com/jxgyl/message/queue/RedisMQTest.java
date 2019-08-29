@@ -134,4 +134,22 @@ public class RedisMQTest {
 			e.printStackTrace();
 		}
 	}
+	
+	@Test
+	public void abs() {
+		try {
+			String from = null;
+			String[] to = { "wangjz@shougangfund.cn" };
+			String subject = null;
+			String text = null;
+			Message[] msgs = new Message[50];
+			for (int i = 0; i < 50; i++) {
+				msgs[i] = Message.createEmail(from, to, subject, text, Arrays.asList(Variable.createVar("username", "BINGJJFLY"), Variable.createVar("uuid", "wrenfas-fafdnsd-naqzdfp")), MessageTemplateEnum.RESET_PASSWORD);
+			}
+			producer.produceEmail(msgs);
+			Thread.sleep(7000);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

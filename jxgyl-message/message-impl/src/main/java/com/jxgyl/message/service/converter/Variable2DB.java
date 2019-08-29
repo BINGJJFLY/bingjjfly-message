@@ -16,10 +16,10 @@ import com.jxgyl.message.service.domain.Variable_DB;
  */
 public class Variable2DB {
 
-	public static List<Variable_DB> var2DB(final Integer msgId, List<Variable> vars) {
+	public static List<Variable_DB> var2DB(final Integer msgId, StatusEnum statusE, List<Variable> vars) {
 		if (vars != null) {
 			final List<Variable_DB> dbs = new ArrayList<Variable_DB>(vars.size());
-			vars.forEach(var -> dbs.add(toDB(msgId, var)));
+			vars.forEach(var -> dbs.add(toDB(msgId, statusE, var)));
 			return dbs;
 		}
 		return null;
@@ -42,7 +42,7 @@ public class Variable2DB {
 		return var;
 	}
 
-	private static Variable_DB toDB(Integer msgId, Variable var) {
+	private static Variable_DB toDB(Integer msgId, StatusEnum statusE, Variable var) {
 		Variable_DB db = null;
 		if (var != null) {
 			db = new Variable_DB();
@@ -50,7 +50,7 @@ public class Variable2DB {
 			db.setName(var.getName());
 			db.setVal(var.getValue());
 			db.setAddTime(Calendar.getInstance().getTime());
-			db.setStatus(StatusEnum.ERROR.status);
+			db.setStatus(statusE.status);
 		}
 		return db;
 	}

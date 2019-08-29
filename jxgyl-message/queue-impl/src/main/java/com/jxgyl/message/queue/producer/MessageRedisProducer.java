@@ -2,7 +2,6 @@ package com.jxgyl.message.queue.producer;
 
 import java.util.Arrays;
 import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,30 +41,8 @@ public class MessageRedisProducer implements MessageProducer {
 
 	@Override
 	public void produceEmail(Message... emails) {
-		produceEmail(true, emails);
-	}
-
-	@Override
-	public void resendEmail(Message... emails) {
-		produceEmail(false, emails);
-	}
-
-	private void produceEmail(boolean store, Message... emails) {
 		if (emails != null && emails.length > 0) {
-			if (store) {
-				executor.execute(new StoreEmailTask(emails));
-			}
-			
-			LOGGER.trace("【生产者生产Email信息准备存入Redis】\r\n{}", Arrays.toString(emails));
-			Future<Long> pushEmailFuture = executor.submit(new PushEmailTask(emails));
-			try {
-				Long count = pushEmailFuture.get();
-				if (count > 0) {
-					run();
-				}
-			} catch (Exception e) {
-				LOGGER.error("【生产者生产Email信息时异常】\r\n{}", Arrays.toString(emails), e);
-			}
+			executor.submit(new PushEmailTask(emails));
 		}
 	}
 
@@ -90,9 +67,20 @@ public class MessageRedisProducer implements MessageProducer {
 
 		@Override
 		public Long call() throws Exception {
-			Long count = redisTemplate.boundListOps(RedisMQ.EMAIL_QUEUE).leftPush(emails);
-			LOGGER.info("【Email信息存入Redis】\r\n{}", Arrays.toString(emails));
-			return count;
+			try {
+				LOGGER.trace("【生产者生产Email信息准备存入数据库】\r\n{}", Arrays.toString(emails));
+				messageService.batchInsert(emails);
+				LOGGER.trace("【生产者生产Email信息准备存入Redis】\r\n{}", Arrays.toString(emails));
+				Long count = redisTemplate.boundListOps(RedisMQ.EMAIL_QUEUE).leftPush(emails);
+				LOGGER.info("【Email信息存入Redis】\r\n{}", Arrays.toString(emails));
+				if (count > 0) {
+					run();
+				}
+			} catch (Exception e) {
+				LOGGER.error("【生产者生产Email信息时异常】\r\n{}", Arrays.toString(emails), e);
+				executor.execute(new MarkAbnormalTask(emails));
+			}
+			return null;
 		}
 	}
 
@@ -106,6 +94,19 @@ public class MessageRedisProducer implements MessageProducer {
 		@Override
 		public void run() {
 			messageService.batchInsert(emails);
+		}
+	}
+
+	class MarkAbnormalTask implements Runnable {
+		Message[] emails;
+
+		public MarkAbnormalTask(Message[] emails) {
+			this.emails = emails;
+		}
+
+		@Override
+		public void run() {
+			messageService.markAbnormal(emails);
 		}
 	}
 }

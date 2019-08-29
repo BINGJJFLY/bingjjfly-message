@@ -35,7 +35,7 @@ public enum MessageTemplateEnum {
 	/**
 	 * 用户重置密码
 	 */
-	RESET_PASSWORD("RESET_PASSWORD", "用户重置密码") {
+	RESET_PASSWORD("RESET_PASSWORD", "首钢基金内网门户密码初始化") {
 		@Override
 		public Map<String, String> embedded() {
 			Map<String, String> embedded = new HashMap<String, String>();

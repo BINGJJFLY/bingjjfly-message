@@ -18,10 +18,10 @@ import com.jxgyl.message.service.domain.Message_DB;
  */
 public class Message2DB {
 
-	public static List<Message_DB> msg2DB(Message... msgs) {
+	public static List<Message_DB> msg2DB(StatusEnum statusE, Message... msgs) {
 		if (msgs != null) {
 			final List<Message_DB> dbs = new ArrayList<Message_DB>(msgs.length);
-			Arrays.stream(msgs).forEach(msg -> dbs.add(toDB(msg)));
+			Arrays.stream(msgs).forEach(msg -> dbs.add(toDB(statusE, msg)));
 			return dbs;
 		}
 		return null;
@@ -48,7 +48,7 @@ public class Message2DB {
 		return msg;
 	}
 
-	private static Message_DB toDB(Message msg) {
+	private static Message_DB toDB(StatusEnum statusE, Message msg) {
 		Message_DB db = null;
 		if (msg != null) {
 			db = new Message_DB();
@@ -59,10 +59,10 @@ public class Message2DB {
 			db.setText(msg.getText());
 			db.setType(msg.getType().name());
 			db.setAddTime(Calendar.getInstance().getTime());
-			db.setStatus(StatusEnum.ERROR.status);
+			db.setStatus(statusE.status);
 			db.setIdentifyId(msg.getIdentifyId());
-			db.setAttachs(Attachment2DB.attach2DB(null, msg.getAttachments()));
-			db.setVars(Variable2DB.var2DB(null, msg.getVars()));
+			db.setAttachs(Attachment2DB.attach2DB(null, statusE, msg.getAttachments()));
+			db.setVars(Variable2DB.var2DB(null, statusE, msg.getVars()));
 		}
 		return db;
 	}
@@ -87,7 +87,7 @@ public class Message2DB {
 	}
 
 	public static enum StatusEnum {
-		SUCCESS(1), ERROR(0);
+		SUCCESS(1), ERROR(0), QUEUE_UP(2);
 		public Integer status;
 
 		private StatusEnum(Integer status) {

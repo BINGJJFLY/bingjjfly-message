@@ -60,6 +60,23 @@
 		</foreach>
 	</update>
 	
+	<select id="selectPrimarykeysByIdentifyIds" resultType="int">
+		select ID from MESSAGE
+		where IDENTIFY_ID in 
+		<foreach collection="list" item="identifyId" open="(" close=")" separator=",">
+		#{identifyId }
+		</foreach>
+	</select>
+	
+	<select id="selectPrimarykeysByIdentifyIdsQueueUp" resultType="int">
+		select ID from MESSAGE
+		where IDENTIFY_ID in 
+		<foreach collection="list" item="identifyId" open="(" close=")" separator=",">
+		#{identifyId }
+		</foreach>
+		and STATUS = '2'
+	</select>
+	
 	<select id="selectPrimarykeysByIdentifyIdsAbnormal" resultType="int">
 		select ID from MESSAGE
 		where IDENTIFY_ID in 

@@ -13,7 +13,11 @@ public interface MessageDBMapper {
 	void batchUpdateNormal(List<Integer> list);
 
 	List<Message_DB> selectAbnormal();
+	
+	List<Integer> selectPrimarykeysByIdentifyIds(List<String> list);
 
+	List<Integer> selectPrimarykeysByIdentifyIdsQueueUp(List<String> list);
+	
 	List<Integer> selectPrimarykeysByIdentifyIdsAbnormal(List<String> list);
 
 	List<Integer> selectPrimarykeysByIdentifyIdsNormal(List<String> list);

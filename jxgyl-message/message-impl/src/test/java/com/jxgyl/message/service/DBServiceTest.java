@@ -21,6 +21,7 @@ import com.jxgyl.message.service.api.MessageDBService;
 import com.jxgyl.message.service.api.VariableDBService;
 import com.jxgyl.message.service.converter.Attachment2DB;
 import com.jxgyl.message.service.converter.Message2DB;
+import com.jxgyl.message.service.converter.Message2DB.StatusEnum;
 import com.jxgyl.message.service.converter.Variable2DB;
 import com.jxgyl.message.service.domain.Attachment_DB;
 import com.jxgyl.message.service.domain.Message_DB;
@@ -53,7 +54,7 @@ public class DBServiceTest {
 	public void insertMessage() {
 		Message msg = Message.createEmail(from, to, subject, text, Arrays.asList(Variable.createVar("name", text)),
 				MessageTemplateEnum.IMPORT_USER);
-		List<Message_DB> list = Message2DB.msg2DB(msg);
+		List<Message_DB> list = Message2DB.msg2DB(StatusEnum.SUCCESS, msg);
 		messageDBService.batchInsert(list);
 		list.forEach(db -> System.out.println(db.getId()));
 	}
@@ -68,7 +69,7 @@ public class DBServiceTest {
 				MessageTemplateEnum.IMPORT_USER);
 		Message msg_3 = Message.createEmail(from, to, subject, text, Arrays.asList(Variable.createVar("name", text)),
 				MessageTemplateEnum.IMPORT_USER);
-		List<Message_DB> list = Message2DB.msg2DB(msg_1, msg_2, msg_3);
+		List<Message_DB> list = Message2DB.msg2DB(StatusEnum.SUCCESS, msg_1, msg_2, msg_3);
 		messageDBService.batchInsert(list);
 		list.forEach(db -> System.out.println(db.getId()));
 	}
@@ -77,15 +78,16 @@ public class DBServiceTest {
 	@Rollback(false)
 	@Transactional
 	public void insertAttachment() {
-		attachmentDBService.batchInsert(Attachment2DB.attach2DB(70, Attachment.createAttach("logo", "logo.png")));
+		attachmentDBService.batchInsert(
+				Attachment2DB.attach2DB(70, StatusEnum.SUCCESS, Attachment.createAttach("logo", "logo.png")));
 	}
 
 	@Test
 	@Rollback(false)
 	@Transactional
 	public void insertAttachments() {
-		List<Attachment_DB> dbs = Attachment2DB.attach2DB(70, Attachment.createAttach("logo", "logo.png"),
-				Attachment.createAttach("hello", "world.png"),
+		List<Attachment_DB> dbs = Attachment2DB.attach2DB(70, StatusEnum.SUCCESS,
+				Attachment.createAttach("logo", "logo.png"), Attachment.createAttach("hello", "world.png"),
 				Attachment.createAttach("name", "static/images/iss002.png"));
 		attachmentDBService.batchInsert(dbs);
 	}
@@ -96,7 +98,7 @@ public class DBServiceTest {
 	public void insertVariable() {
 		List<Variable> vars = new ArrayList<Variable>(1);
 		vars.add(Variable.createVar("username", "iss002"));
-		variableDBService.batchInsert(Variable2DB.var2DB(70, vars));
+		variableDBService.batchInsert(Variable2DB.var2DB(70, StatusEnum.SUCCESS, vars));
 	}
 
 	@Test
@@ -107,7 +109,7 @@ public class DBServiceTest {
 		vars.add(Variable.createVar("username", "iss002"));
 		vars.add(Variable.createVar("uuid", "raflwer===Djlwer/df"));
 		vars.add(Variable.createVar("age", "18"));
-		variableDBService.batchInsert(Variable2DB.var2DB(70, vars));
+		variableDBService.batchInsert(Variable2DB.var2DB(70, StatusEnum.SUCCESS, vars));
 	}
 
 	@Test
@@ -130,7 +132,7 @@ public class DBServiceTest {
 				MessageTemplateEnum.IMPORT_USER, Attachment.createAttach("a", "static/images/a.png"),
 				Attachment.createAttach("b", "static/images/b.png"),
 				Attachment.createAttach("c", "static/images/c.png"));
-		List<Message_DB> list = Message2DB.msg2DB(msg_1, msg_2, msg_3);
+		List<Message_DB> list = Message2DB.msg2DB(StatusEnum.SUCCESS, msg_1, msg_2, msg_3);
 		messageDBService.batchInsert(list);
 	}
 
@@ -138,14 +140,17 @@ public class DBServiceTest {
 	@Rollback(false)
 	@Transactional
 	public void markAbnormal() {
-		List<String> list = Arrays.asList("4298e73b-44a3-4d4a-b6df-6f9f719fd456",
-				"7ed6f50b-19be-47b8-9ee5-1707971d2614", "7a5eb911-3eb1-41f3-b99e-2cf82e00e2ad");
+		// List<String> list = Arrays.asList("4298e73b-44a3-4d4a-b6df-6f9f719fd456",
+		// "7ed6f50b-19be-47b8-9ee5-1707971d2614",
+		// "7a5eb911-3eb1-41f3-b99e-2cf82e00e2ad");
+		List<Integer> list = Arrays.asList(1, 2, 3);
 		messageDBService.markAbnormal(list);
 	}
-	
+
 	@Test
 	public void selectAbnormal() {
 		List<Message_DB> dbs = messageDBService.selectAbnormal();
 		System.out.println(dbs);
 	}
+
 }

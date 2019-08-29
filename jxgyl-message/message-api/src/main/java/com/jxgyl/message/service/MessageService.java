@@ -11,11 +11,18 @@ import com.jxgyl.message.Message;
 public interface MessageService {
 
 	/**
-	 * 入库
+	 * 正常消息入库
 	 * 
 	 * @param msgs
 	 */
 	void batchInsert(Message... msgs);
+	
+	/**
+	 * 异常消息入库
+	 * 
+	 * @param msgs
+	 */
+	void batchInsertAbnormal(Message... msgs);
 	
 	/**
 	 * 标记异常

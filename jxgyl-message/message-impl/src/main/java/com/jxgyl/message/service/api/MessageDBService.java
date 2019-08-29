@@ -23,9 +23,8 @@ public interface MessageDBService {
 	 * 标记异常
 	 * 
 	 * @param list
-	 *            Message的UUID集合
 	 */
-	void markAbnormal(List<String> list);
+	void markAbnormal(List<Integer> list);
 
 	/**
 	 * 标记正常
@@ -41,5 +40,15 @@ public interface MessageDBService {
 	 * @return
 	 */
 	List<Message_DB> selectAbnormal();
+	
+	/**
+	 * 根据UUID查询排队中的信息
+	 * 
+	 * @param identities
+	 * @return
+	 */
+	List<Integer> selectPrimarykeysByIdentifyIdsQueueUp(List<String> identities);
+	
+	List<Integer> selectPrimarykeysByIdentifyIds(List<String> identities);
 
 }

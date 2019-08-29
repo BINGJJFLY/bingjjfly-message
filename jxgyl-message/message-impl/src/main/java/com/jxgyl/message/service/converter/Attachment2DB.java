@@ -17,10 +17,10 @@ import com.jxgyl.message.service.domain.Attachment_DB;
  */
 public class Attachment2DB {
 
-	public static List<Attachment_DB> attach2DB(final Integer msgId, Attachment... attachs) {
+	public static List<Attachment_DB> attach2DB(final Integer msgId, StatusEnum statusE, Attachment... attachs) {
 		if (attachs != null) {
 			final List<Attachment_DB> dbs = new ArrayList<Attachment_DB>(attachs.length);
-			Arrays.stream(attachs).forEach(attach -> dbs.add(toDB(msgId, attach)));
+			Arrays.stream(attachs).forEach(attach -> dbs.add(toDB(msgId, statusE, attach)));
 			return dbs;
 		}
 		return null;
@@ -43,7 +43,7 @@ public class Attachment2DB {
 		return attach;
 	}
 
-	private static Attachment_DB toDB(Integer msgId, Attachment attach) {
+	private static Attachment_DB toDB(Integer msgId, StatusEnum statusE, Attachment attach) {
 		Attachment_DB db = null;
 		if (attach != null) {
 			db = new Attachment_DB();
@@ -51,7 +51,7 @@ public class Attachment2DB {
 			db.setName(attach.getName());
 			db.setPath(attach.getPath());
 			db.setAddTime(Calendar.getInstance().getTime());
-			db.setStatus(StatusEnum.ERROR.status);
+			db.setStatus(statusE.status);
 		}
 		return db;
 	}

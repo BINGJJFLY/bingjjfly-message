@@ -60,27 +60,24 @@ public class MessageDBServiceImpl implements MessageDBService {
 	}
 
 	@Override
-	public void markAbnormal(List<String> list) {
+	public void markAbnormal(List<Integer> msgIds) {
 		try {
-			if (!CollectionUtils.isEmpty(list)) {
-				List<Integer> msgIds = selectPrimarykeysByIdentifyIdsNormal(list);
-				if (!CollectionUtils.isEmpty(msgIds)) {
-					mapper.batchUpdate(msgIds);
-					attachmentDBService.markAbnormal(msgIds);
-					variableDBService.markAbnormal(msgIds);
-					LOGGER.info("【标记异常消息】\r\n{}", list);
-				}
+			if (!CollectionUtils.isEmpty(msgIds)) {
+				mapper.batchUpdate(msgIds);
+				attachmentDBService.markAbnormal(msgIds);
+				variableDBService.markAbnormal(msgIds);
+				LOGGER.info("【标记异常消息】\r\n{}", msgIds);
 			}
 		} catch (Exception e) {
-			LOGGER.error("【标记异常消息时异常】\r\n{}", list, e);
+			LOGGER.error("【标记异常消息时异常】\r\n{}", msgIds, e);
 		}
 	}
-	
+
 	@Override
 	public void markNormal(List<String> list) {
 		try {
 			if (!CollectionUtils.isEmpty(list)) {
-				List<Integer> msgIds = selectPrimarykeysByIdentifyIdsAbnormal(list);
+				List<Integer> msgIds = selectPrimarykeysByIdentifyIds(list);
 				if (!CollectionUtils.isEmpty(msgIds)) {
 					mapper.batchUpdateNormal(msgIds);
 					attachmentDBService.markNormal(msgIds);
@@ -93,12 +90,18 @@ public class MessageDBServiceImpl implements MessageDBService {
 		}
 	}
 
-	private List<Integer> selectPrimarykeysByIdentifyIdsAbnormal(List<String> identities) {
-		return mapper.selectPrimarykeysByIdentifyIdsAbnormal(identities);
+	@Override
+	public List<Integer> selectPrimarykeysByIdentifyIds(List<String> identities) {
+		return mapper.selectPrimarykeysByIdentifyIds(identities);
 	}
 	
-	private List<Integer> selectPrimarykeysByIdentifyIdsNormal(List<String> identities) {
-		return mapper.selectPrimarykeysByIdentifyIdsNormal(identities);
+	@Override
+	public List<Integer> selectPrimarykeysByIdentifyIdsQueueUp(List<String> identities) {
+		return mapper.selectPrimarykeysByIdentifyIdsQueueUp(identities);
+	}
+
+	private List<Integer> selectPrimarykeysByIdentifyIdsAbnormal(List<String> identities) {
+		return mapper.selectPrimarykeysByIdentifyIdsAbnormal(identities);
 	}
 
 	@Override

@@ -23,14 +23,7 @@ public interface MessageProducer extends Runnable {
 	 * @param emails
 	 */
 	void produceEmail(Message... emails);
-	
-	/**
-	 * Email信息检错重发
-	 * 
-	 * @param emails
-	 */
-	void resendEmail(Message... emails);
-	
+
 	/**
 	 * 将短信放入消息队列中
 	 * 
