@@ -23,6 +23,11 @@ public class MessageController {
 	@Autowired
 	@Qualifier("messageRedisProducer")
 	private MessageProducer producer;
+	
+	@RequestMapping("/message")
+	public String message() {
+		return "message";
+	}
 
 	@ResponseBody
 	@RequestMapping("/send")
@@ -31,11 +36,11 @@ public class MessageController {
 		sender.send(msg);
 	}
 
-	@ResponseBody
 	@RequestMapping("/produce")
-	public void produce(String[] to, String username, String uuid) {
+	public String produce(String[] to, String username, String uuid) {
 		Message email = Message.createEmail(null, to, null, null, Arrays.asList(Variable.createVar("username", username), Variable.createVar("uuid", uuid)), MessageTemplateEnum.RESET_PASSWORD);
 		producer.produceEmail(email);
+		return "success";
 	}
 	
 	@ResponseBody
