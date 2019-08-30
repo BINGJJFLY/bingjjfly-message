@@ -26,28 +26,27 @@ public class MessageController {
 
 	@ResponseBody
 	@RequestMapping("/send")
-	public void send(String to) {
-		Message msg = Message.createEmail(null, new String[] { to }, null, null, Arrays.asList(Variable.createVar("username", "测试生产"), Variable.createVar("uuid", "www.hhh.com")), MessageTemplateEnum.RESET_PASSWORD);
+	public void send(String[] to, String username, String uuid) {
+		Message msg = Message.createEmail(null, to, null, null, Arrays.asList(Variable.createVar("username", username), Variable.createVar("uuid", uuid)), MessageTemplateEnum.RESET_PASSWORD);
 		sender.send(msg);
 	}
 
 	@ResponseBody
 	@RequestMapping("/produce")
-	public void produce(String to) {
-		Message email = Message.createEmail(null, new String[] { to }, null, null, Arrays.asList(Variable.createVar("username", "测试生产Produce"), Variable.createVar("uuid", "www.hhh.com")), MessageTemplateEnum.RESET_PASSWORD);
+	public void produce(String[] to, String username, String uuid) {
+		Message email = Message.createEmail(null, to, null, null, Arrays.asList(Variable.createVar("username", username), Variable.createVar("uuid", uuid)), MessageTemplateEnum.RESET_PASSWORD);
 		producer.produceEmail(email);
 	}
 	
 	@ResponseBody
 	@RequestMapping("/abs")
-	public void abs(String to) {
+	public void abs(String[] to, int count) {
 		String from = null;
-		String[] tos = { to };
 		String subject = "测试条数";
 		String text = null;
-		Message[] msgs = new Message[200];
-		for (int i = 0; i < 200; i++) {
-			msgs[i] = Message.createEmail(from, tos, subject + "_" + i, text, Arrays.asList(Variable.createVar("username", "BINGJJFLY"), Variable.createVar("uuid", "wrenfas-fafdnsd-naqzdfp")), MessageTemplateEnum.RESET_PASSWORD);
+		Message[] msgs = new Message[count];
+		for (int i = 0; i < count; i++) {
+			msgs[i] = Message.createEmail(from, to, subject + "_" + i, text, Arrays.asList(Variable.createVar("username", "BINGJJFLY"), Variable.createVar("uuid", "wrenfas-fafdnsd-naqzdfp")), MessageTemplateEnum.RESET_PASSWORD);
 		}
 		producer.produceEmail(msgs);
 	}
