@@ -55,4 +55,15 @@ public class MessageController {
 		}
 		producer.produceEmail(msgs);
 	}
+	
+	@ResponseBody
+	@RequestMapping("/absf")
+	public void absf(String[] to, int count) {
+		String from = null;
+		String subject = "测试条数";
+		String text = null;
+		for (int i = 0; i < count; i++) {
+			producer.produceEmail(Message.createEmail(from, to, subject + "_" + i, text, Arrays.asList(Variable.createVar("username", "BINGJJFLY"), Variable.createVar("uuid", "wrenfas-fafdnsd-naqzdfp")), MessageTemplateEnum.RESET_PASSWORD));
+		}
+	}
 }

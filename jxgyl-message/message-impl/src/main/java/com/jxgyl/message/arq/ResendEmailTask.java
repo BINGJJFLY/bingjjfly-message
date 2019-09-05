@@ -32,8 +32,8 @@ public class ResendEmailTask {
 
 	public void resend() {
 		LOGGER.info("【检错重发任务开始执行】");
+		producer.emailQueueUp(bd());
 		redis();
-		emailSender.send(bd());
 	}
 
 	private Message[] bd() {

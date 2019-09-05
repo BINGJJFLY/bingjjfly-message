@@ -77,12 +77,10 @@ public class EmailSenderTest {
 	@Test
 	public void send_4() {
 		String[] to = { "wangjz@shougangfund.cn", "mr_zhen163@163.com", "1772370296@qq.com" };
-		Message[] msgs = new Message[3];
 		for (int i = 0; i < 3; i++) {
 			String txt = "【域值对 多用户 多消息】 ~ Index_" + i;
-			msgs[i] = Message.createEmail(from, to, subject, text, Arrays.asList(Variable.createVar("name", txt)), MessageTemplateEnum.IMPORT_USER);
+			emailSender.send(Message.createEmail(from, to, subject, text, Arrays.asList(Variable.createVar("name", txt)), MessageTemplateEnum.IMPORT_USER));
 		}
-		emailSender.send(msgs);
 		try {
 			Thread.sleep(7000);
 		} catch (InterruptedException e) {

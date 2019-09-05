@@ -1,7 +1,5 @@
 package com.jxgyl.message.logging;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,15 +31,4 @@ public class Slf4jLoggingImpl implements LoggingService {
 			LOGGING.error("【发送异常的消息内容】\r\n{}", msg);
 		}
 	}
-
-	@Override
-	public void logs(List<Message> msgs, boolean success) {
-		delegate.logs(msgs, success);
-		if (success) {
-			LOGGING.info("【发送成功的消息内容】\r\n{}", msgs);
-		} else {
-			LOGGING.error("【发送异常的消息内容】\r\n{}", msgs);
-		}
-	}
-
 }

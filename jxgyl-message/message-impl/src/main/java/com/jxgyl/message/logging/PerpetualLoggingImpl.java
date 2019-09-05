@@ -1,7 +1,5 @@
 package com.jxgyl.message.logging;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -28,14 +26,4 @@ public class PerpetualLoggingImpl implements LoggingService {
 			messageService.markNormal(msg);
 		}
 	}
-
-	@Override
-	public void logs(List<Message> msgs, boolean success) {
-		if (!success) {
-			messageService.markAbnormal(msgs.toArray(new Message[] {}));
-		} else {
-			
-		}
-	}
-
 }

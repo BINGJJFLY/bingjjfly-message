@@ -1,8 +1,6 @@
 package com.jxgyl.message.email;
 
-import java.util.Arrays;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeUtility;
@@ -47,21 +45,12 @@ public class EmailSender implements MessageSender {
 	@Autowired
 	private ThreadPoolTaskExecutor executor;
 
-//	private static final Object LIMIT = new Object();
 	private DataSourceResolver resolver = new FileDataSourceResolver();
 
 	@Override
-	public void send(Message... msgs) {
-		if (msgs != null) {
-			executor.execute(new Runnable() {
-				@Override
-				public void run() {
-					Arrays.stream(msgs).forEach(msg -> {
-//						executor.submit(new SendEmailTask(msg))
-						new SendEmailTask(msg);
-					});
-				}
-			});
+	public void send(Message msg) {
+		if (msg != null) {
+			executor.execute(new SendEmailTask(msg));
 		}
 	}
 
@@ -71,42 +60,26 @@ public class EmailSender implements MessageSender {
 	 * @author iss002
 	 *
 	 */
-	class SendEmailTask /* implements Runnable */ {
+	class SendEmailTask implements Runnable {
 		Message msg;
 
 		SendEmailTask(Message msg) {
 			this.msg = msg;
-			if (msg != null) {
-				LOGGER.trace("【消费者接收到Email信息准备消费】\r\n", msg);
-				try {
-					mailSender.send(mimeMessage());
-					loggingService.log(msg, true);
-					TimeUnit.MILLISECONDS.sleep(1000);
-				} catch (Exception e) {
-					LOGGER.error("【消费者消费Email信息时异常】\r\n", e);
-					loggingService.log(msg, false);
-				}
-			}
 		}
 
-/*		
 		@Override
 		public void run() {
 			if (msg != null) {
 				LOGGER.trace("【消费者接收到Email信息准备消费】\r\n", msg);
 				try {
-					synchronized (LIMIT) {
-						mailSender.send(mimeMessage());
-						loggingService.log(msg, true);
-						TimeUnit.MILLISECONDS.sleep(1200);
-					}
+					mailSender.send(mimeMessage());
+					loggingService.log(msg, true);
 				} catch (Exception e) {
 					LOGGER.error("【消费者消费Email信息时异常】\r\n", e);
 					loggingService.log(msg, false);
 				}
 			}
 		}
-*/
 
 		private void mimeMessageHelper(MimeMessage mimeMessage) throws Exception {
 			final MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
@@ -152,5 +125,5 @@ public class EmailSender implements MessageSender {
 			return mimeMessage;
 		}
 	}
-	
+
 }

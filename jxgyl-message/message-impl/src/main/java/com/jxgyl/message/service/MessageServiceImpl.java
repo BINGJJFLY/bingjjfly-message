@@ -30,6 +30,11 @@ public class MessageServiceImpl implements MessageService {
 	public void batchInsertAbnormal(Message... msgs) {
 		messageDBService.batchInsert(Message2DB.msg2DB(StatusEnum.ERROR, msgs));
 	}
+	
+	@Override
+	public void batchInsertError(Message... msgs) {
+		messageDBService.batchInsert(Message2DB.msg2DB(StatusEnum.CEASE, msgs));
+	}
 
 	@Override
 	public void markAbnormal(Message... msgs) {

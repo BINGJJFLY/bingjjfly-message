@@ -20,6 +20,6 @@ public interface MessageSender {
 	 * 
 	 * @param msgs
 	 */
-	void send(Message... msgs);
+	void send(Message msg);
 
 }

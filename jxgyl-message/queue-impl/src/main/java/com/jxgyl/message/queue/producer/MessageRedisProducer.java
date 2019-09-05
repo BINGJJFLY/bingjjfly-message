@@ -1,19 +1,17 @@
 package com.jxgyl.message.queue.producer;
 
 import java.util.Arrays;
-import java.util.concurrent.Callable;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import com.jxgyl.message.Message;
-import com.jxgyl.message.listener.RedisMessageListener;
 import com.jxgyl.message.queue.RedisMQ;
-import com.jxgyl.message.queue.consumer.MessageRedisConsumer;
 import com.jxgyl.message.service.MessageService;
 import com.jxgyl.message.session.ReidsMQSession;
 
@@ -33,22 +31,35 @@ public class MessageRedisProducer implements MessageProducer {
 	@Autowired
 	private ThreadPoolTaskExecutor executor;
 	@Autowired
-	private RedisMessageListener listener;
-	@Autowired
-	private MessageRedisConsumer consumer;
-	@Autowired
 	private MessageService messageService;
+	@Autowired
+	private ReidsMQSession redisMqSession;
+	
+	@Value("${message.producer.on}")
+	private boolean on;
 
 	@Override
 	public void produceEmail(Message... emails) {
 		if (emails != null && emails.length > 0) {
-			executor.submit(new PushEmailTask(emails));
+			if (on) {
+				executor.execute(new PushEmailTask(emails));
+			} else {
+				executor.execute(new MarkErrorTask(emails));
+			}
 		}
 	}
 
 	@Override
+	public Long emailQueueUp(Message... emails) {
+		if (emails != null) {
+			return redisTemplate.boundListOps(RedisMQ.EMAIL_QUEUE).leftPush(emails);
+		}
+		return 0L;
+	}
+
+	@Override
 	public void run() {
-		executor.execute(new ReidsMQSession(listener, consumer));
+		redisMqSession.run();
 	}
 
 	@Override
@@ -58,29 +69,32 @@ public class MessageRedisProducer implements MessageProducer {
 		}
 	}
 
-	class PushEmailTask implements Callable<Long> {
+	public class PushEmailTask implements Runnable {
 		Message[] emails;
 
 		PushEmailTask(Message[] emails) {
 			this.emails = emails;
 		}
 
+		public Message[] getEmails() {
+			return emails;
+		}
+
 		@Override
-		public Long call() throws Exception {
+		public void run() {
 			try {
 				LOGGER.trace("【生产者生产Email信息准备存入数据库】\r\n{}", Arrays.toString(emails));
 				messageService.batchInsert(emails);
 				LOGGER.trace("【生产者生产Email信息准备存入Redis】\r\n{}", Arrays.toString(emails));
-				Long count = redisTemplate.boundListOps(RedisMQ.EMAIL_QUEUE).leftPush(emails);
+				Long count = emailQueueUp(emails);
 				LOGGER.info("【Email信息存入Redis】\r\n{}", Arrays.toString(emails));
 				if (count > 0) {
-					run();
+					MessageRedisProducer.this.run();
 				}
 			} catch (Exception e) {
 				LOGGER.error("【生产者生产Email信息时异常】\r\n{}", Arrays.toString(emails), e);
 				executor.execute(new MarkAbnormalTask(emails));
 			}
-			return null;
 		}
 	}
 
@@ -107,6 +121,20 @@ public class MessageRedisProducer implements MessageProducer {
 		@Override
 		public void run() {
 			messageService.markAbnormal(emails);
+		}
+	}
+	
+	class MarkErrorTask implements Runnable {
+		Message[] emails;
+
+		public MarkErrorTask(Message[] emails) {
+			this.emails = emails;
+		}
+
+		@Override
+		public void run() {
+			messageService.batchInsertError(emails);
+			LOGGER.info("【开关设置为关闭消息不发送】\r\n" + Arrays.toString(emails));
 		}
 	}
 }

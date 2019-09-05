@@ -25,6 +25,13 @@ public interface MessageService {
 	void batchInsertAbnormal(Message... msgs);
 	
 	/**
+	 * 错误消息入库
+	 * 
+	 * @param msgs
+	 */
+	void batchInsertError(Message... msgs);
+	
+	/**
 	 * 标记异常
 	 * 
 	 * @param msgs

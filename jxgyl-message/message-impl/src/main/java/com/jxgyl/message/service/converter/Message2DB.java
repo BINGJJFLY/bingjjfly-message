@@ -87,7 +87,7 @@ public class Message2DB {
 	}
 
 	public static enum StatusEnum {
-		SUCCESS(1), ERROR(0), QUEUE_UP(2);
+		SUCCESS(1), ERROR(0), QUEUE_UP(2), CEASE(-1);
 		public Integer status;
 
 		private StatusEnum(Integer status) {
