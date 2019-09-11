@@ -33,9 +33,20 @@ public enum MessageTemplateEnum {
 		}
 	},
 	/**
-	 * 用户重置密码
+	 * 客户端用户密码初始化
 	 */
 	RESET_PASSWORD("RESET_PASSWORD", "首钢基金内网门户密码初始化") {
+		@Override
+		public Map<String, String> embedded() {
+			Map<String, String> embedded = new HashMap<String, String>();
+			embedded.put("logo", "static/images/logob.png");
+			return embedded;
+		}
+	},
+	/**
+	 * 管理端用户重置密码
+	 */
+	ADMIN_RESET_PASSWORD("ADMIN_RESET_PASSWORD", "首钢基金内网门户重置密码") {
 		@Override
 		public Map<String, String> embedded() {
 			Map<String, String> embedded = new HashMap<String, String>();
