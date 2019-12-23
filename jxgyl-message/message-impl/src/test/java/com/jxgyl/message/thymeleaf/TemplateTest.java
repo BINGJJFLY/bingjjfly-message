@@ -52,9 +52,10 @@ public class TemplateTest {
 	 */
 	@Test
 	public void process_3() {
-		String template = MessageTemplateEnum.IMPORT_USER.getTemplate();
+		String template = MessageTemplateEnum.RESET_PASSWORD.getTemplate();
 		List<Variable> vars = new ArrayList<>(1);
-		vars.add(Variable.createVar("name", "iss002"));
+		vars.add(Variable.createVar("username", "iss002"));
+		vars.add(Variable.createVar("uuid", "uuid00100"));
 		String result = thymeleafHelper.process(template, vars);
 		System.out.println(result);
 	}

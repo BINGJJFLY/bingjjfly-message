@@ -37,8 +37,8 @@ public class MessageController {
 	}
 
 	@RequestMapping("/produce")
-	public String produce(String[] to, String username, String uuid) {
-		Message email = Message.createEmail(null, to, null, null, Arrays.asList(Variable.createVar("username", username), Variable.createVar("uuid", uuid)), MessageTemplateEnum.RESET_PASSWORD);
+	public String produce(String[] to, String usercode, String username, String uuid, String template) {
+		Message email = Message.createEmail(null, to, null, null, Arrays.asList(Variable.createVar("username", username), Variable.createVar("uuid", PasswordHandler.encrypt(usercode, uuid))), MessageTemplateEnum.mte(template));
 		producer.produceEmail(email);
 		return "success";
 	}

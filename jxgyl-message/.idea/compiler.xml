@@ -15,7 +15,7 @@
     <bytecodeTargetLevel>
       <module name="jxgyl-message" target="1.5" />
       <module name="message-api" target="1.5" />
-      <module name="message-impl" target="1.5" />
+      <module name="message-impl" target="1.8" />
       <module name="message-web" target="1.8" />
       <module name="parent" target="1.5" />
       <module name="queue-impl" target="1.8" />

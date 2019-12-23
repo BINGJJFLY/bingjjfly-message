@@ -10,8 +10,13 @@
 <body>
 	<form action="<%=path %>/produce" method="post">
 		目标邮箱：<input name="to" /></br> 
-		用户名：<input name="username" /></br> 
-		UUID：<input name="uuid" /></br>
+		用户名：<input name="usercode" /></br> 
+		用户编码：<input name="username" /></br>
+		密码：<input name="uuid" /></br>
+		模板：<select name="template">
+			<option value="RESET_PASSWORD">RESET_PASSWORD</option>
+			<option value="ADMIN_RESET_PASSWORD">ADMIN_RESET_PASSWORD</option>
+		</select></br>
 		<button type="submit">Submit</button>
 	</form>
 </body>

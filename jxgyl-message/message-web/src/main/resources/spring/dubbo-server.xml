@@ -10,7 +10,7 @@
 	
 	<dubbo:registry address="${zookeeper.address}" client="zkclient" timeout="10000"/>
 
-	<dubbo:protocol name="dubbo" port="20892"/>
+	<dubbo:protocol name="dubbo" port="20797"/>
 	
 	<dubbo:reference interface="com.jxgyl.message.MessageSender" id="emailSender" version="1.0" check="false" />
 	<dubbo:reference interface="com.jxgyl.message.queue.producer.MessageProducer" id="messageRedisProducer" version="1.0" check="false" />
