@@ -17,20 +17,17 @@ import com.jxgyl.message.MessageSender;
 public class RedisMessageListener implements MessageListener {
 
 	@Resource(name = "emailSender")
-	private MessageSender messageSender;
+	private MessageSender emailSender;
 
 	@Override
 	public void onMessage(Message msg) {
-		switch (msg.getType()) {
-		case EMAIL:
-			messageSender.send(msg);
-			break;
-		case TEXT:
-			// 发送短信
-			break;
-		default:
-			break;
+		if (msg != null) {
+			email(msg);
 		}
+	}
+
+	private void email(Message msg) {
+		emailSender.send(msg);
 	}
 
 }

@@ -3,6 +3,7 @@ package com.jxgyl.message;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * 信息
@@ -22,6 +23,7 @@ public class Message implements Serializable {
 	private List<Variable> vars;
 	private MessageTypeEnum type;
 	private MessageTemplateEnum business;
+	private String identifyId;
 
 	private Message(String[] to, String text, List<Variable> vars, MessageTypeEnum type, MessageTemplateEnum business) {
 		this.to = to;
@@ -29,6 +31,7 @@ public class Message implements Serializable {
 		this.vars = vars;
 		this.type = type;
 		this.business = business;
+		this.identifyId = UUID.randomUUID().toString();
 	}
 
 	private Message(String from, String[] to, String subject, String text, List<Variable> vars, MessageTypeEnum type,
@@ -41,6 +44,7 @@ public class Message implements Serializable {
 		this.type = type;
 		this.business = business;
 		this.attachments = attachments;
+		this.identifyId = UUID.randomUUID().toString();
 	}
 
 	/**
@@ -157,6 +161,15 @@ public class Message implements Serializable {
 		this.business = business;
 	}
 
+	public String getIdentifyId() {
+		return identifyId;
+	}
+
+	public Message identifyId(String identifyId) {
+		this.identifyId = identifyId;
+		return this;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -164,6 +177,7 @@ public class Message implements Serializable {
 		result = prime * result + Arrays.hashCode(attachments);
 		result = prime * result + ((business == null) ? 0 : business.hashCode());
 		result = prime * result + ((from == null) ? 0 : from.hashCode());
+		result = prime * result + ((identifyId == null) ? 0 : identifyId.hashCode());
 		result = prime * result + ((subject == null) ? 0 : subject.hashCode());
 		result = prime * result + ((text == null) ? 0 : text.hashCode());
 		result = prime * result + Arrays.hashCode(to);
@@ -189,6 +203,11 @@ public class Message implements Serializable {
 			if (other.from != null)
 				return false;
 		} else if (!from.equals(other.from))
+			return false;
+		if (identifyId == null) {
+			if (other.identifyId != null)
+				return false;
+		} else if (!identifyId.equals(other.identifyId))
 			return false;
 		if (subject == null) {
 			if (other.subject != null)
@@ -216,7 +235,7 @@ public class Message implements Serializable {
 	public String toString() {
 		return "Message [from=" + from + ", to=" + Arrays.toString(to) + ", subject=" + subject + ", text=" + text
 				+ ", attachments=" + Arrays.toString(attachments) + ", vars=" + vars + ", type=" + type + ", business="
-				+ business + "]";
+				+ business + ", identifyId=" + identifyId + "]";
 	}
 
 }

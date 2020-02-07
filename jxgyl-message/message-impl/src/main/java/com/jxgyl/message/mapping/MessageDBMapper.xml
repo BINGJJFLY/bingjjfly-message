@@ -10,19 +10,88 @@
 		<result column="TYPE" jdbcType="VARCHAR" property="type" />
 		<result column="TEMPLATE" jdbcType="VARCHAR" property="template" />
 		<result column="ADD_TIME" jdbcType="TIMESTAMP" property="addTime" />
+		<result column="STATUS" jdbcType="INTEGER" property="status" />
+		<result column="IDENTIFY_ID" jdbcType="VARCHAR" property="identifyId" />
+		<collection property="attachs" 
+			javaType="list" 
+			ofType="com.jxgyl.message.service.domain.Attachment_DB"
+			select="com.jxgyl.message.mapper.AttachmentDBMapper.selectAbnormal"
+			column="ID">
+		</collection>
+		<collection property="vars" 
+			javaType="list" 
+			ofType="com.jxgyl.message.service.domain.Variable_DB"
+			select="com.jxgyl.message.mapper.VariableDBMapper.selectAbnormal"
+			column="ID">
+		</collection>
 	</resultMap>
 
 	<insert id="batchInsert" parameterType="java.util.List"
 		useGeneratedKeys="true" keyProperty="id">
 		insert into MESSAGE (ID, SENDER, RECEIVER, SUBJECT, TEXT, TYPE,
-		TEMPLATE, ADD_TIME)
+		TEMPLATE, ADD_TIME, STATUS, IDENTIFY_ID)
 		values
 		<foreach collection="list" item="msg" separator=",">
 			(#{msg.id,jdbcType=VARCHAR}, #{msg.sender,jdbcType=VARCHAR},
 			#{msg.receiver,jdbcType=VARCHAR}, #{msg.subject,jdbcType=VARCHAR},
 			#{msg.text,jdbcType=VARCHAR}, #{msg.type,jdbcType=VARCHAR},
-			#{msg.template,jdbcType=VARCHAR}, #{msg.addTime,jdbcType=TIMESTAMP})
+			#{msg.template,jdbcType=VARCHAR}, #{msg.addTime,jdbcType=TIMESTAMP}, 
+			#{msg.status,jdbcType=INTEGER}, #{msg.identifyId,jdbcType=VARCHAR})
 		</foreach>
 	</insert>
 
+	<select id="selectAbnormal" resultMap="BaseResultMap">
+		select * from MESSAGE where STATUS = '0'
+	</select>
+	
+	<update id="batchUpdate" parameterType="int">
+		update MESSAGE set STATUS = '0' 
+		where ID in 
+		<foreach collection="list" item="id" open="(" close=")" separator=",">
+		#{id }
+		</foreach>
+	</update>
+	
+	<update id="batchUpdateNormal" parameterType="int">
+		update MESSAGE set STATUS = '1' 
+		where ID in 
+		<foreach collection="list" item="id" open="(" close=")" separator=",">
+		#{id }
+		</foreach>
+	</update>
+	
+	<select id="selectPrimarykeysByIdentifyIds" resultType="int">
+		select ID from MESSAGE
+		where IDENTIFY_ID in 
+		<foreach collection="list" item="identifyId" open="(" close=")" separator=",">
+		#{identifyId }
+		</foreach>
+	</select>
+	
+	<select id="selectPrimarykeysByIdentifyIdsQueueUp" resultType="int">
+		select ID from MESSAGE
+		where IDENTIFY_ID in 
+		<foreach collection="list" item="identifyId" open="(" close=")" separator=",">
+		#{identifyId }
+		</foreach>
+		and STATUS = '2'
+	</select>
+	
+	<select id="selectPrimarykeysByIdentifyIdsAbnormal" resultType="int">
+		select ID from MESSAGE
+		where IDENTIFY_ID in 
+		<foreach collection="list" item="identifyId" open="(" close=")" separator=",">
+		#{identifyId }
+		</foreach>
+		and STATUS = '0'
+	</select>
+	
+	<select id="selectPrimarykeysByIdentifyIdsNormal" resultType="int">
+		select ID from MESSAGE
+		where IDENTIFY_ID in 
+		<foreach collection="list" item="identifyId" open="(" close=")" separator=",">
+		#{identifyId }
+		</foreach>
+		and STATUS = '1'
+	</select>
 </mapper>

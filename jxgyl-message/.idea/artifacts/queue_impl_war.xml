@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="queue-impl:war">
+    <output-path>$PROJECT_DIR$/queue-impl/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>queue-impl</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="queue-impl.war">
+      <element id="artifact" artifact-name="queue-impl:war exploded" />
+    </root>
+  </artifact>
+</component>

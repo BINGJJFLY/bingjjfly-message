@@ -18,5 +18,4 @@ import com.jxgyl.message.Message;
 public interface LoggingService {
 
 	void log(Message msg, boolean success);
-
 }

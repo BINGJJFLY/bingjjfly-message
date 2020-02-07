@@ -13,5 +13,6 @@
 		<module>message-impl</module>
 		<module>queue-impl</module>
 		<module>parent</module>
+		<module>message-web</module>
 	</modules>
 </project>

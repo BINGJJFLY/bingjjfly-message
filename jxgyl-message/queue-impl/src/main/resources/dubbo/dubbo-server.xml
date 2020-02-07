@@ -15,5 +15,6 @@
 	<dubbo:service protocol="dubbo" interface="com.jxgyl.message.queue.consumer.MessageConsumer" ref="messageRedisConsumer" version="1.0" timeout="100000" path="dubbo/messageRedisConsumer" />
 	<dubbo:service protocol="dubbo" interface="com.jxgyl.message.queue.producer.MessageProducer" ref="messageRedisProducer" version="1.0" timeout="100000" path="dubbo/messageRedisProducer" />
 	<dubbo:reference interface="com.jxgyl.message.MessageSender" id="emailSender" version="1.0" check="false" />
+	<dubbo:reference interface="com.jxgyl.message.service.MessageService" id="messageService" version="1.0" check="false" />
 	
 </beans>

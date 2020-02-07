@@ -18,6 +18,9 @@
 				<prop key="mail.smtp.auth">${mail.smtp.auth}</prop>
 				<prop key="mail.smtp.starttls.enable">${mail.smtp.starttls.enable}</prop>
 				<prop key="mail.smtp.starttls.required">${mail.smtp.starttls.required}</prop>
+				<prop key="mail.smtp.ssl.enable">${mail.smtp.ssl.enable}</prop>
+				<prop key="mail.smtp.ssl.socketFactory.fallback">${mail.smtp.ssl.socketFactory.fallback}</prop>
+				<prop key="mail.smtp.ssl.socketFactory.class">${mail.smtp.ssl.socketFactory.class}</prop>
 			</props>
 		</property>
 	</bean>

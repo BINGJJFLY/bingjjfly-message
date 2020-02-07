@@ -1,21 +1,19 @@
 package com.jxgyl.message.email;
 
-import java.util.Arrays;
+import java.util.Map;
 
-import javax.activation.DataHandler;
-import javax.mail.BodyPart;
-import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
 import javax.mail.internet.MimeUtility;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import com.jxgyl.message.Attachment;
 import com.jxgyl.message.Message;
@@ -50,9 +48,9 @@ public class EmailSender implements MessageSender {
 	private DataSourceResolver resolver = new FileDataSourceResolver();
 
 	@Override
-	public void send(Message... msgs) {
-		if (msgs != null) {
-			Arrays.stream(msgs).forEach(msg -> executor.execute(new SendEmailTask(msg)));
+	public void send(Message msg) {
+		if (msg != null) {
+			executor.execute(new SendEmailTask(msg));
 		}
 	}
 
@@ -72,6 +70,7 @@ public class EmailSender implements MessageSender {
 		@Override
 		public void run() {
 			if (msg != null) {
+				LOGGER.trace("【消费者接收到Email信息准备消费】\r\n", msg);
 				try {
 					mailSender.send(mimeMessage());
 					loggingService.log(msg, true);
@@ -82,38 +81,49 @@ public class EmailSender implements MessageSender {
 			}
 		}
 
-		private MimeMessageHelper mimeMessageHelper(MimeMessage mimeMessage) throws Exception {
+		private void mimeMessageHelper(MimeMessage mimeMessage) throws Exception {
 			final MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
 			helper.setFrom(msg.getFrom() == null ? env.from() : msg.getFrom());
 			helper.setTo(msg.getTo());
-			helper.setSubject(msg.getSubject());
-			return helper;
+			helper.setSubject(msg.getSubject() == null ? msg.getBusiness().getSubject() : msg.getSubject());
+			// 添加内容
+			text(helper);
+			// 添加嵌入式附件
+			embeddedAttach(helper);
+			// 添加附件
+			attach(helper);
+		}
+
+		private void attach(MimeMessageHelper helper) throws Exception {
+			Attachment[] attachments = msg.getAttachments();
+			if (attachments != null) {
+				for (int j = 0; j < attachments.length; j++) {
+					Attachment attachment = attachments[j];
+					helper.addAttachment(MimeUtility.encodeText(attachment.getName()),
+							resolver.resolve(env.dir(), attachment.getPath()));
+				}
+			}
+		}
+
+		private void embeddedAttach(MimeMessageHelper helper) throws Exception {
+			Map<String, String> embedded = msg.getBusiness().embedded();
+			if (!CollectionUtils.isEmpty(embedded)) {
+				for (Map.Entry<String, String> entry : embedded.entrySet()) {
+					helper.addInline(entry.getKey(), new ClassPathResource(entry.getValue()));
+				}
+			}
+		}
+
+		private void text(MimeMessageHelper helper) throws Exception {
+			String content = thymeleafHelper.process(msg.getBusiness().getTemplate(), msg.getVars());
+			helper.setText(content == null ? msg.getText() : content, true);
 		}
 
 		private MimeMessage mimeMessage() throws Exception {
 			MimeMessage mimeMessage = mailSender.createMimeMessage();
 			mimeMessageHelper(mimeMessage);
-			mimeMessage.setContent(multipart());
 			return mimeMessage;
 		}
-
-		private MimeMultipart multipart() throws Exception {
-			final MimeMultipart multipart = new MimeMultipart();
-			final BodyPart body = new MimeBodyPart();
-			String content = thymeleafHelper.process(msg.getBusiness().getTemplate(), msg.getVars());
-			body.setContent(content == null ? msg.getText() : content, "text/html;charset=utf-8");
-			multipart.addBodyPart(body);
-			Attachment[] attachments = msg.getAttachments();
-			if (attachments != null) {
-				for (int j = 0; j < attachments.length; j++) {
-					Attachment attachment = attachments[j];
-					final BodyPart attchBody = new MimeBodyPart();
-					attchBody.setFileName(MimeUtility.encodeText(attachment.getName()));
-					attchBody.setDataHandler(new DataHandler(resolver.resolve(env.dir(), attachment.getPath())));
-					multipart.addBodyPart(attchBody);
-				}
-			}
-			return multipart;
-		}
 	}
+
 }

@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="message-impl:war">
+    <output-path>$PROJECT_DIR$/message-impl/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>message-impl</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="message-impl.war">
+      <element id="artifact" artifact-name="message-impl:war exploded" />
+    </root>
+  </artifact>
+</component>

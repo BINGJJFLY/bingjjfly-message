@@ -31,5 +31,4 @@ public class Slf4jLoggingImpl implements LoggingService {
 			LOGGING.error("【发送异常的消息内容】\r\n{}", msg);
 		}
 	}
-
 }
